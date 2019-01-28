@@ -10,6 +10,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import adt.Map;
+import impl.ArrayMap;
 
 
 public abstract class MapStressTest extends MapRemoveTest {
@@ -160,6 +161,7 @@ public abstract class MapStressTest extends MapRemoveTest {
         }
 
     }
+    
     @Test
     public void stressTest() {
         // let size be the current size of test
@@ -205,7 +207,7 @@ public abstract class MapStressTest extends MapRemoveTest {
             assert (!testMapInt.iterator().hasNext());
         }
     }
-
+    
     @Test
     public void randTest() {
         // let size be the current size of test

@@ -132,7 +132,7 @@ public abstract class MapTest extends CollectionTest{
     public void replacedIterator() {
         reset();
         populate(getData().length / 2);
-        testMap.put("Alaska", "Barrows");
+        testMap.put("Alaska", "Barrows");     
         boolean[] founds = new boolean[getData().length / 2];
         for (int i = 0; i < founds.length; i++)
             founds[i] = false;

@@ -4,9 +4,6 @@ import impl.ArrayMap;
 
 
 public class AMTest extends MapStressTest {
-    
-
-    
 
     @Override
     protected void reset() {

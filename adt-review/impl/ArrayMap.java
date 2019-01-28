@@ -1,8 +1,6 @@
 package impl;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import adt.Map;
 
 /**
@@ -47,8 +45,7 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * representation of this map.
      */
     private Association<K,V>[] internal;
-
-    
+    private int lastAssoc = -1;
 
     /**
      * Plain constructor. 
@@ -76,18 +73,40 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException(); 
+        return new Iterator<K>() {
+        	private int index = 0;
+			public boolean hasNext() {
+				return internal[index] != null;
+			}
+			public K next() {
+				if (hasNext()) {
+					index++;
+					return internal[index-1].key;
+				}
+				return null;
+			}
+        };
     }
-   
-    
-    
+
     /**
      * Add an association to the map.
      * @param key The key to this association
      * @param val The value to which this key is associated
      */
     public void put(K key, V val) {
-        throw new UnsupportedOperationException(); 
+    	
+    	//If key already exists
+    	for (Association<K,V> a : internal)
+        	if (a != null && key.equals(a.key)) {
+        		a.val = val;
+        		return;
+        	}
+    	
+    	lastAssoc++;
+    	if (lastAssoc > internal.length - 1)
+    		grow();
+    	
+    	internal[lastAssoc] = new Association<K, V>(key,val);
     }
 
     /**
@@ -96,7 +115,10 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @return The value associated with this key, null if none exists
      */
     public V get(K key) {
-        throw new UnsupportedOperationException();
+    	for (Association<K,V> a : internal)
+        	if (a != null && key.equals(a.key))
+        		return a.val;
+    	return null;
     }
 
     /**
@@ -105,7 +127,10 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @return true if there is an association for this key, false otherwise
      */
     public boolean containsKey(K key) {
-        throw new UnsupportedOperationException();
+        for (Association<K,V> a : internal)
+        	if (a != null && key.equals(a.key))
+        		return true;
+        return false;
     }
 
     /**
@@ -113,7 +138,14 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @param key The key to remove
      */
     public void remove(K key) {
-        throw new UnsupportedOperationException();
+    	for (int i=0;i<internal.length;i++) {
+    		Association<K,V> a = internal[i];
+        	if (a != null && key.equals(a.key)) {
+        		internal[i] = internal[lastAssoc];
+        		internal[lastAssoc] = null;
+        		lastAssoc--;
+        	}
+    	}
     }
     
     @Override

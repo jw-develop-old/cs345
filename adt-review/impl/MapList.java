@@ -21,7 +21,7 @@ public class MapList<E> implements List<E> {
      * implementation of map).
      */
     private Map<Integer, E> internal;
-    
+    private int count = 0;
     
     /**
      * Constructor that is given the internal representation.
@@ -33,7 +33,6 @@ public class MapList<E> implements List<E> {
      */
     public MapList() {
         this.internal = new ArrayMap<Integer,E>();
-        
     }
     
     /**
@@ -41,7 +40,15 @@ public class MapList<E> implements List<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         throw new UnsupportedOperationException();
+         return new Iterator<E>() {
+        	Iterator<Integer> it = internal.iterator();
+			public boolean hasNext() {
+				return it.hasNext();
+			}
+			public E next() {
+				return internal.get(it.next());
+			}
+         };
     }
 
     /**
@@ -50,7 +57,8 @@ public class MapList<E> implements List<E> {
      * @param element The element to be appended
      */
     public void add(E element) {
-         throw new UnsupportedOperationException();
+        internal.put(count, element);
+        count++;
     }
 
     /**
@@ -61,7 +69,8 @@ public class MapList<E> implements List<E> {
      * @param element The element at the specified position
      */
     public void set(int index, E element) {
-         throw new UnsupportedOperationException();
+    	checkIndex(index);
+    	internal.put(index, element);
     }
 
     /**
@@ -71,7 +80,8 @@ public class MapList<E> implements List<E> {
      * @return The element at the specified position
      */
     public E get(int index) {
-         throw new UnsupportedOperationException();
+    	checkIndex(index);
+        return internal.get(index);
     }
 
 
@@ -86,7 +96,10 @@ public class MapList<E> implements List<E> {
      * @param element The element which to insert
      */
     public void insert(int index, E element) {
-         throw new UnsupportedOperationException();
+    	 checkIndex(index);
+         for (int i = count; i > index; i--)
+        	 internal.put(i,internal.get(i - 1));
+         internal.put(index, element);
     }
 
     /**
@@ -98,7 +111,12 @@ public class MapList<E> implements List<E> {
      * @return The item removed
      */
    public E remove(int index) {
-        throw new UnsupportedOperationException();
+  	   checkIndex(index);
+	   E toReturn = internal.get(index);
+	   for (int i = index; i < count; i++)
+		   internal.put(i,internal.get(i+1));
+	   count--;
+	   return toReturn;
    }
 
    /**
@@ -106,7 +124,12 @@ public class MapList<E> implements List<E> {
     * @return The number of elements in this list.
     */
     public int size() {
-         throw new UnsupportedOperationException();
+         return count;
+    }
+    
+    private void checkIndex(int i) {
+    	if (i < 0 || i > count - 1)
+    		throw new IndexOutOfBoundsException();
     }
     
     @Override
@@ -121,8 +144,4 @@ public class MapList<E> implements List<E> {
     	}
     	return toReturn +"]";
     }
-    
-    	
-
-
 }
