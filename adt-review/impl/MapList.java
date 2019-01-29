@@ -41,12 +41,12 @@ public class MapList<E> implements List<E> {
      */
     public Iterator<E> iterator() {
          return new Iterator<E>() {
-        	Iterator<Integer> it = internal.iterator();
+        	int current = 0;
 			public boolean hasNext() {
-				return it.hasNext();
+				return current < count;
 			}
 			public E next() {
-				return internal.get(it.next());
+				return internal.get(current++);
 			}
          };
     }
@@ -57,8 +57,7 @@ public class MapList<E> implements List<E> {
      * @param element The element to be appended
      */
     public void add(E element) {
-        internal.put(count, element);
-        count++;
+        internal.put(count++, element);
     }
 
     /**
@@ -96,10 +95,14 @@ public class MapList<E> implements List<E> {
      * @param element The element which to insert
      */
     public void insert(int index, E element) {
-    	 checkIndex(index);
-         for (int i = count; i > index; i--)
-        	 internal.put(i,internal.get(i - 1));
-         internal.put(index, element);
+    	if (index == count)
+    		add(element);
+    	else {
+			checkIndex(index);
+		    for (int i = count++; i > index; i--)
+		    	 internal.put(i,internal.get(i - 1));
+		    internal.put(index, element);
+    	}
     }
 
     /**

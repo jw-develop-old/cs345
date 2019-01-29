@@ -34,7 +34,7 @@ public class ListBag<E> implements Bag<E> {
      * unsupported, nor is concurrent modification checked).
      */
    public Iterator<E> iterator() {
-        throw new UnsupportedOperationException();
+        return internal.iterator();
     }
 
     /**
@@ -43,7 +43,7 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to add
      */
     public void add(E item) {
-         throw new UnsupportedOperationException();
+         internal.add(item);
     }
 
     /**
@@ -52,7 +52,11 @@ public class ListBag<E> implements Bag<E> {
      * @return The number of occurences of this item in the bag
      */
     public int count(E item) {
-         throw new UnsupportedOperationException();
+         int count = 0;
+         for (int i = 0; i < internal.size(); i++)
+        	 if (item.equals(internal.get(i)))
+        		 count++;
+         return count;
     }
 
     /**
@@ -61,7 +65,14 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to remove
      */
     public void remove(E item) {
-         throw new UnsupportedOperationException();
+    	int i = 0;
+    	while (i < internal.size())
+    		if (item.equals(internal.get(i))) {
+    			internal.remove(i);
+    			i = 0;
+    			}
+    		else
+    			i++;
     }
 
     /**
@@ -70,7 +81,7 @@ public class ListBag<E> implements Bag<E> {
      * @return The number of items.
      */
     public int size() {
-         throw new UnsupportedOperationException();
+         return internal.size();
     }
 
     /**
@@ -78,7 +89,7 @@ public class ListBag<E> implements Bag<E> {
      * @return True if the bag is empty, false otherwise.
      */
     public boolean isEmpty() {
-         throw new UnsupportedOperationException();
+         return internal.size() == 0;
     }
     
     @Override
