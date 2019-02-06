@@ -45,7 +45,7 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * representation of this map.
      */
     private Association<K,V>[] internal;
-    private int lastAssoc = -1;
+    private int count = 0;
 
     /**
      * Plain constructor. 
@@ -79,10 +79,8 @@ public class ArrayMap<K, V> implements Map<K, V> {
 				return internal[index] != null;
 			}
 			public K next() {
-				if (hasNext()) {
-					index++;
-					return internal[index-1].key;
-				}
+				if (hasNext())
+					return internal[index++].key;
 				return null;
 			}
         };
@@ -95,18 +93,14 @@ public class ArrayMap<K, V> implements Map<K, V> {
      */
     public void put(K key, V val) {
     	
-    	//If key already exists
-    	for (Association<K,V> a : internal)
-        	if (a != null && key.equals(a.key)) {
-        		a.val = val;
-        		return;
-        	}
-    	
-    	lastAssoc++;
-    	if (lastAssoc > internal.length - 1)
-    		grow();
-    	
-    	internal[lastAssoc] = new Association<K, V>(key,val);
+    	Association<K,V> a = getAssoc(key);
+    	if (a != null)
+        	a.val = val;
+    	else {
+	    	if (count > internal.length - 1)
+	    		grow();
+	    	internal[count++] = new Association<K, V>(key,val);
+    	}
     }
 
     /**
@@ -115,9 +109,9 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @return The value associated with this key, null if none exists
      */
     public V get(K key) {
-    	for (Association<K,V> a : internal)
-        	if (a != null && key.equals(a.key))
-        		return a.val;
+    	Association<K,V> a = getAssoc(key);
+    	if (a != null)
+    		return a.val;
     	return null;
     }
 
@@ -127,10 +121,14 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @return true if there is an association for this key, false otherwise
      */
     public boolean containsKey(K key) {
-        for (Association<K,V> a : internal)
+        return getAssoc(key) != null;
+    }
+    
+    private Association<K,V> getAssoc(K key) {
+    	for (Association<K,V> a : internal)
         	if (a != null && key.equals(a.key))
-        		return true;
-        return false;
+        		return a;
+    	return null;
     }
 
     /**
@@ -141,9 +139,9 @@ public class ArrayMap<K, V> implements Map<K, V> {
     	for (int i=0;i<internal.length;i++) {
     		Association<K,V> a = internal[i];
         	if (a != null && key.equals(a.key)) {
-        		internal[i] = internal[lastAssoc];
-        		internal[lastAssoc] = null;
-        		lastAssoc--;
+        		internal[i] = internal[count - 1];
+        		internal[count - 1] = null;
+        		count--;
         	}
     	}
     }
