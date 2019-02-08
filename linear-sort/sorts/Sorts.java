@@ -27,23 +27,37 @@ public class Sorts {
         // The maximum value in the array (once we calculate it)
         int maxVal = 0;
         // A. Find the maximum value in the array
-        //add loop here
+        for (T c : array)
+        	if ((toInt.v(c)) > maxVal)
+        		maxVal = toInt.v(c);
+        System.out.println("Worked");
+        
         // The occurrences of each value (once we calculate them)
         int[] counts = new int[maxVal+1];
         // B. tabulate the occurrences of each value
-        //add loop here
+        for (T c : array)
+        	counts[toInt.v(c)]++;
+        System.out.println("Worked");
 
         // The initial places for each value (once we calculate them)
         int[] nextPlace = new int[maxVal+1];
         // C. Determine the initial next place for each value
         nextPlace[0] = 0;
-        //add loop here
+        int num = 0;
+        for (int i=0;i<counts.length;i++) {
+        	num += counts[i];
+        	nextPlace[i] = num;
+        }
+        System.out.println("Worked");
 
         // The auxiliary array into which to sort the array
         @SuppressWarnings("unchecked")
         T[] aux = (T[]) new Object[array.length];
         // D. Sort the items into aux
-        //add loop here
+        int current = 0;
+        for (T c : array)
+        	aux[nextPlace[toInt.v(c)]++] = c;
+        System.out.println("Worked");
 
         // E. move them back to array
         //add loop here
