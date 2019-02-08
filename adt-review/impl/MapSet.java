@@ -44,7 +44,7 @@ public class MapSet<E> implements Set<E> {
     public void add(E item) {
     	if (!internal.containsKey(item))
     		count++;
-        internal.put(item, "");
+        internal.put(item,"");
     }
 
     /**
