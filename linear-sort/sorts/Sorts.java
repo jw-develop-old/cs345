@@ -30,14 +30,12 @@ public class Sorts {
         for (T c : array)
         	if ((toInt.v(c)) > maxVal)
         		maxVal = toInt.v(c);
-        System.out.println("Worked");
         
         // The occurrences of each value (once we calculate them)
         int[] counts = new int[maxVal+1];
         // B. tabulate the occurrences of each value
         for (T c : array)
         	counts[toInt.v(c)]++;
-        System.out.println("Worked");
 
         // The initial places for each value (once we calculate them)
         int[] nextPlace = new int[maxVal+1];
@@ -45,22 +43,20 @@ public class Sorts {
         nextPlace[0] = 0;
         int num = 0;
         for (int i=0;i<counts.length;i++) {
-        	num += counts[i];
         	nextPlace[i] = num;
+        	num += counts[i];
         }
-        System.out.println("Worked");
 
         // The auxiliary array into which to sort the array
         @SuppressWarnings("unchecked")
         T[] aux = (T[]) new Object[array.length];
         // D. Sort the items into aux
-        int current = 0;
         for (T c : array)
         	aux[nextPlace[toInt.v(c)]++] = c;
-        System.out.println("Worked");
-
+        
         // E. move them back to array
-        //add loop here
+        for (int i=0;i<array.length;i++)
+        	array[i] = aux[i];
     }
 
     /**
@@ -89,13 +85,10 @@ public class Sorts {
             final int rp = rPow;
             countingSort(array, new ToInteger<Integer>() {
                 public int v(Integer item) {
-                     throw new UnsupportedOperationException();
+                	return (item/rp)%r;
                 }
             });
             rPow *= r;
         }
     }
-    
-
-
 }
