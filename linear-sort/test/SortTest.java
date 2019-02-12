@@ -24,7 +24,7 @@ public abstract class SortTest {
             allFound &= found;
         }
         return allFound;
-    }
+    }  
 
     
     private static String displayArray(Integer[] array) {
