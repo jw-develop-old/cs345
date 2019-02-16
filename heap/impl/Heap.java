@@ -221,8 +221,24 @@ public class Heap<E> {
      * POSTCONDITION: The subtree rooted at i is a heap.
      */
     public void decreaseKeyAt(int i) {
-         throw new UnsupportedOperationException();
-     }
+    	if (checkIndex(i)) {
+	    	int toComp = i;
+	    	if (!checkIndex(right(i)))
+	    		toComp = left(i);
+	    	else if (!checkIndex(left(i)))
+	    		toComp = right(i);
+	    	else if (compy.compare(internal[right(i)], internal[left(i)]) > 0)
+		        toComp = right(i);
+		    else if (compy.compare(internal[right(i)], internal[left(i)]) <= 0)
+		        toComp = left(i);
+	    	
+	    	if (checkIndex(toComp))
+	    		if (compy.compare(internal[i], internal[toComp]) < 0) {
+	    			swap(toComp,i);
+	    			decreaseKeyAt(toComp);
+	    		}
+    	}
+    }
     
     /** 
      * Correct a heap in which one value is larger than its ancestors.
@@ -235,8 +251,12 @@ public class Heap<E> {
      * 
      */
     public void increaseKeyAt(int i) {
-        
-         throw new UnsupportedOperationException();
+    	if (checkIndex(i) && checkIndex(parent(i))) {
+	         if (compy.compare(internal[i], internal[parent(i)]) > 0) {
+	        	 swap(parent(i),i);
+	        	 increaseKeyAt(parent(i));
+	         }
+    	}
     }
     
     /**
@@ -324,7 +344,12 @@ public class Heap<E> {
             if (internal[j].equals(key)) i = j;
         return i;
     }
-
+    
+    private boolean checkIndex(int i) {
+    	if (i > heapSize - 1 || i < 0)
+    		return false;
+    	return true;
+    }
     
     /**
      * Display the state of the heap as an array. The entire 
@@ -344,9 +369,5 @@ public class Heap<E> {
             toReturn += "|";
         toReturn += "]";
         return toReturn;
-            
     }
-
-    
-    
 }

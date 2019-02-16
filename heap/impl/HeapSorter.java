@@ -28,9 +28,14 @@ public class HeapSorter {
                         return o1 - o2;
                     }
                 });
+        for (int i = heap.heapSize() - 1; i >= 0; i--)
+            heap.decreaseKeyAt(i);
         
-        // insert code for completing the heap sort algorithm
-
+        for (int i=heap.heapSize() -1;i>=0;i--) {
+        	heap.swap(i,0);
+        	heap.decreaseKeyAt(0);
+        }
+        	
         // postcondition: that heap.internal is sorted
         
         // copy elements from internal (now sorted) back to array
@@ -54,9 +59,10 @@ public class HeapSorter {
                     }
                 });
         
-        // insert code for completing the heap sort algorithm
-
-        // postcondition: that heap.internal is sorted
+        for (int i=heap.heapSize() -1;i>=0;i--) {
+        	heap.swap(i,0);
+        	heap.decreaseKeyAt(0);
+        }
         
     }
 
