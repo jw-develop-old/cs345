@@ -107,7 +107,8 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
      */
     public void insert(K key) {
         if (isFull()) throw new FullContainerException();
-         throw new UnsupportedOperationException();
+        internal.add(key);
+        internal.decreaseKeyAt(internal.heapSize() - 1);
     }
 
     /**
@@ -118,14 +119,20 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
      */
     public K max() { return internal.get(0); }
 
-
     /**
      * Return and remove the maximum element.
      * @return The maximum element.
      */
     public K extractMax() {
-
-         throw new UnsupportedOperationException();
+    	if (!internal.isEmpty()) {
+	    	int i = internal.heapSize() - 1;
+	    	K toReturn = internal.get(0);
+	    	internal.swap(i,0);
+	    	internal.decrementHeapSize();
+	    	internal.decreaseKeyAt(0);
+	    	return toReturn;
+    	}
+    	return null;
     }
 
     /**

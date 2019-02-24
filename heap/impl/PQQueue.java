@@ -29,8 +29,6 @@ public class PQQueue<E> implements Queue<E> {
      */
     private Map<E, Integer> arrivalTimes;
 
-    
-
     /**
      * Constructor.
      * @param maxSize The capacity of this queue.

@@ -1,7 +1,6 @@
 package impl;
 
 import java.util.Comparator;
-import java.util.Iterator;
 
 
 /**
@@ -28,11 +27,11 @@ public class HeapSorter {
                         return o1 - o2;
                     }
                 });
-        for (int i = heap.heapSize() - 1; i >= 0; i--)
-            heap.decreaseKeyAt(i);
         
-        for (int i=heap.heapSize() -1;i>=0;i--) {
+        for (int i = heap.heapSize() - 1;i>0;) {
+        	i = heap.heapSize() - 1;
         	heap.swap(i,0);
+        	heap.decrementHeapSize();
         	heap.decreaseKeyAt(0);
         }
         	
@@ -41,10 +40,7 @@ public class HeapSorter {
         // copy elements from internal (now sorted) back to array
         for (int i = 0; i < array.length; i++)
             array[i] = heap.get(i);
-        
-        
     }
-
     
     /**
      * Sort this array, in place.
@@ -55,19 +51,15 @@ public class HeapSorter {
         Heap<E> heap = Heap.array2Heap(array, array.length,
                 new Comparator<E>() {
                     public int compare(E o1, E o2) {
-                        return - compy.compare(o1, o2);
+                        return compy.compare(o1, o2);
                     }
                 });
         
-        for (int i=heap.heapSize() -1;i>=0;i--) {
+        for (int i = heap.heapSize() - 1;i>0;) {
+        	i = heap.heapSize() - 1;
         	heap.swap(i,0);
+        	heap.decrementHeapSize();
         	heap.decreaseKeyAt(0);
         }
-        
     }
-
-    
-    
-   
-    
 }
