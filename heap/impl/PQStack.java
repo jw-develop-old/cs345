@@ -29,7 +29,7 @@ public class PQStack<E> implements Stack<E> {
      */
     private Map<E, Integer> arrivalTimes;
     
-
+    private int currentHeight = 0;
  
     /**
      * Constructor.
@@ -37,7 +37,11 @@ public class PQStack<E> implements Stack<E> {
      */
     public PQStack(int maxSize) {
         arrivalTimes = new ListMap<E, Integer>();
-        //finish constructor here
+        pq = new HeapPriorityQueue<E>(maxSize,new Comparator<E>() {
+			public int compare(E o1, E o2) {
+				return arrivalTimes.get(o1) - arrivalTimes.get(o2);
+			}
+        });
     }
 
     /**
@@ -56,8 +60,10 @@ public class PQStack<E> implements Stack<E> {
      * Retrieve (but do not remove) the top element of this stack.
      * @return The top element.
      */
-    public E top() { 
-         throw new UnsupportedOperationException();
+    public E top() {
+    	if (pq.isEmpty())
+    		throw new NoSuchElementException();
+    	return pq.max();
     }
 
     /**
@@ -65,7 +71,12 @@ public class PQStack<E> implements Stack<E> {
      * @return The top element.
      */
     public E pop() {
-         throw new UnsupportedOperationException();
+    	if (pq.isEmpty())
+    		throw new NoSuchElementException();
+    	E toReturn = pq.extractMax();
+    	arrivalTimes.remove(toReturn);
+    	currentHeight--;
+        return toReturn;
     }
 
     /**
@@ -73,7 +84,9 @@ public class PQStack<E> implements Stack<E> {
      * @param x The element to add.
      */
     public void push(E x) {
-         throw new UnsupportedOperationException();
+    	arrivalTimes.put(x, currentHeight);
+    	currentHeight++;
+        pq.insert(x);
     }
 
     public String toString() { return pq.toString(); }

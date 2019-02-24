@@ -82,7 +82,6 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
      */
     public HeapPriorityQueue(Iterable<K> items, int size, Comparator<K> compy) {
         internal = new Heap<K>(items, size, compy);
-
     }
     
     /**
@@ -108,7 +107,7 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
     public void insert(K key) {
         if (isFull()) throw new FullContainerException();
         internal.add(key);
-        internal.decreaseKeyAt(internal.heapSize() - 1);
+        internal.increaseKeyAt(internal.heapSize() - 1);
     }
 
     /**
