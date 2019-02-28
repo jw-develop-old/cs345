@@ -36,8 +36,25 @@ public class PrimMinSpanTree implements MinSpanTree {
         for (int i = 0; i < g.numVertices(); i++)
             parents[i] = -1;
         
-         //Add code here in part 5
+        while (!pq.isEmpty()) {
+        	VertexRecord current = pq.extractMax();
+        	int parent = parents[current.id];
+        	if (parent != -1)
+        		mstEdges.add(new WeightedEdge(
+        				current.id,parent,g.weight(current.id,parent),false));
+        	for (int v : g.adjacents(current.id)) {
+        		VertexRecord vr = records[v];
+        		double dist = vr.getDistance();
+        		double weight = g.weight(current.id,v);
+        		if (pq.contains(new VertexRecord(v,dist))
+        				&& weight < dist) {
+        			parents[v] = current.id;
+        			vr.setDistance(weight);
+        			pq.increaseKey(vr);
+        		}
+        	}
+        }
+
         return mstEdges;
     }
-
 }

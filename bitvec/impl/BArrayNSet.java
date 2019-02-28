@@ -92,7 +92,11 @@ public class BArrayNSet implements NSet {
      * @return The number of items.
      */
     public int size() {
-         throw new UnsupportedOperationException();
+         int count = 0;
+         for (boolean x: internal)
+        	 if (x)
+        		 count++;
+         return count;
     }
 
 
@@ -139,7 +143,12 @@ public class BArrayNSet implements NSet {
      */
     public NSet union(NSet other) {
         checkParameter(other);
-         throw new UnsupportedOperationException();
+        BArrayNSet toReturn = new BArrayNSet(internal.length);
+        for (int x : other)
+        	toReturn.add(x);
+        for (int x : this)
+        	toReturn.add(x);
+        return toReturn;
     }
 
     /**
@@ -151,7 +160,11 @@ public class BArrayNSet implements NSet {
      */
     public NSet intersection(NSet other) {
         checkParameter(other);
-         throw new UnsupportedOperationException();
+        BArrayNSet toReturn = new BArrayNSet(internal.length);
+        for (int x : other)
+        	if (this.contains(x))
+        		toReturn.add(x);
+        return toReturn;
     }
 
     /**
@@ -164,7 +177,12 @@ public class BArrayNSet implements NSet {
      */
     public NSet difference(NSet other) {
         checkParameter(other);
-         throw new UnsupportedOperationException();
+        BArrayNSet toReturn = new BArrayNSet(internal.length);
+        for (int x : other)
+        	toReturn.add(x);
+        for (int x : this)
+        	toReturn.remove(x);
+        return toReturn;
     }
 
     /**
@@ -178,7 +196,20 @@ public class BArrayNSet implements NSet {
         int j = 0;
         while (j < internal.length && !internal[j]) j++;
         final int finalJ = j;
-         throw new UnsupportedOperationException();
+        return new Iterator<Integer>() {
+        	int current = finalJ;
+			public boolean hasNext() {
+				return internal[current];
+			}
+			public Integer next() {
+				int toReturn = current;
+				while (!internal[current++]) {
+					
+					if (current >= internal.length)
+						return null;
+				}
+				return toReturn;
+			}
+        };
     }
-
 }
