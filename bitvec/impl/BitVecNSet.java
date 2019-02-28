@@ -77,7 +77,7 @@ public class BitVecNSet implements NSet {
      */ 
     public boolean contains(Integer item) {
         checkIndex(item);
-         throw new UnsupportedOperationException();
+        return internal[item/8];
     }
 
     /**
