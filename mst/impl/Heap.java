@@ -346,9 +346,7 @@ public class Heap<E> {
     }
     
     private boolean checkIndex(int i) {
-    	if (i > heapSize - 1 || i < 0)
-    		return false;
-    	return true;
+    	return !(i > heapSize - 1 || i < 0);
     }
     
     /**

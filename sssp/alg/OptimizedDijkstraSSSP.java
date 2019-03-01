@@ -20,7 +20,6 @@ import adt.WeightedGraph.WeightedEdge;
  */
 public class OptimizedDijkstraSSSP implements SSSP {
 
-    
     /**
      * Compute the shortest paths in a given tree from
      * a given source to all over vertices.
@@ -40,7 +39,18 @@ public class OptimizedDijkstraSSSP implements SSSP {
         PriorityQueue<HPAVertexRecord> pq = 
                 new OptimizedHeapPriorityQueue<HPAVertexRecord>(distanceBounds, new HPAVertexRecord.VRComparator());
         
-        //Add code here in part 5
+        while (!pq.isEmpty()) {
+        	HPAVertexRecord u = pq.extractMax();
+        		for (int v : g.adjacents(u.id)) {
+        			double newDist = distanceBounds[u.id].getDistance() + g.weight(u.id, v);
+        			if (distanceBounds[v].getDistance() > newDist) {
+        				distanceBounds[v].setDistance(newDist);
+        				parents[v] = u.id;
+        				pq.increaseKey(distanceBounds[v]);
+        			}
+        		}
+        }
+        
         Set<WeightedEdge> treeEdges = new HashSet<WeightedEdge>();
         
         for (int v = 0; v < g.numVertices(); v++) {

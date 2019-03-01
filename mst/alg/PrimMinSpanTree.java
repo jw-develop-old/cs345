@@ -54,7 +54,8 @@ public class PrimMinSpanTree implements MinSpanTree {
         		}
         	}
         }
-
+        
         return mstEdges;
     }
+
 }

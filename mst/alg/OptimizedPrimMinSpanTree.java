@@ -32,7 +32,25 @@ public class OptimizedPrimMinSpanTree implements MinSpanTree {
         for (int i = 0; i < g.numVertices(); i++)
             parents[i] = -1;
         
-        //Add code here in part 7 
+        while (!pq.isEmpty()) {
+        	HPAVertexRecord current = pq.extractMax();
+        	int parent = parents[current.id];
+        	if (parent != -1)
+        		mstEdges.add(new WeightedEdge(
+        				current.id,parent,g.weight(current.id,parent),false));
+        	for (int v : g.adjacents(current.id)) {
+        		HPAVertexRecord vr = records[v];
+        		double dist = vr.getDistance();
+        		double weight = g.weight(current.id,v);
+        		if (pq.contains(new HPAVertexRecord(v,dist))
+        				&& weight < dist) {
+        			parents[v] = current.id;
+        			vr.setDistance(weight);
+        			pq.increaseKey(vr);
+        		}
+        	}
+        }
+        
         return mstEdges;
     }
     

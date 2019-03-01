@@ -125,8 +125,8 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
     public K extractMax() {
     	if (!internal.isEmpty()) {
 	    	int i = internal.heapSize() - 1;
-	    	K toReturn = internal.get(0);
 	    	internal.swap(i,0);
+	    	K toReturn = internal.get(i);
 	    	internal.decrementHeapSize();
 	    	internal.decreaseKeyAt(0);
 	    	return toReturn;
@@ -141,7 +141,7 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
      */
     public boolean contains(K key) {
         int pos = internal.findKey(key);
-        return pos != -1 && pos < internal.heapSize();
+        return pos != -1;
     }
 
     /**

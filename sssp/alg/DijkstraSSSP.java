@@ -38,7 +38,19 @@ public class DijkstraSSSP implements SSSP {
         distanceBounds[source].setDistance(0);
         PriorityQueue<VertexRecord> pq = 
                 new HeapPriorityQueue<VertexRecord>(distanceBounds, new VertexRecord.VRComparator());
-          //add code here in part 4
+
+        while (!pq.isEmpty()) {
+        	VertexRecord u = pq.extractMax();
+        		for (int v : g.adjacents(u.id)) {
+        			double newDist = distanceBounds[u.id].getDistance() + g.weight(u.id, v);
+        			if (distanceBounds[v].getDistance() > newDist) {
+        				distanceBounds[v].setDistance(newDist);
+        				parents[v] = u.id;
+        				pq.increaseKey(distanceBounds[v]);
+        			}
+        		}
+        }
+        
         Set<WeightedEdge> treeEdges = new HashSet<WeightedEdge>();
         
         for (int v = 0; v < g.numVertices(); v++) {

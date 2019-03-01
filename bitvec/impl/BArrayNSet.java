@@ -177,10 +177,10 @@ public class BArrayNSet implements NSet {
      */
     public NSet difference(NSet other) {
         checkParameter(other);
-        BArrayNSet toReturn = new BArrayNSet(internal.length);
-        for (int x : other)
-        	toReturn.add(x);
+        NSet toReturn = new BArrayNSet(internal.length);
         for (int x : this)
+        	toReturn.add(x);
+        for (int x : other)
         	toReturn.remove(x);
         return toReturn;
     }
@@ -190,26 +190,71 @@ public class BArrayNSet implements NSet {
      * @return An iterator for the items in the NSet.
      */
     public Iterator<Integer> iterator() {
-        // calculate the index of the first true position,
-        // if any; that is, the first value the iterator should
-        // return
+
         int j = 0;
         while (j < internal.length && !internal[j]) j++;
         final int finalJ = j;
         return new Iterator<Integer>() {
+        	
         	int current = finalJ;
+        	
 			public boolean hasNext() {
-				return internal[current];
+				return current < internal.length;
 			}
+			
 			public Integer next() {
-				int toReturn = current;
-				while (!internal[current++]) {
+				if (!hasNext()) throw new NoSuchElementException();
+				int toReturn = current++;
+				
+				//Moves current up.
+				while (current < internal.length && !internal[current])
+					current++;
 					
-					if (current >= internal.length)
-						return null;
-				}
 				return toReturn;
 			}
         };
     }
+    
+    public String atoString() {
+        String toReturn = "{";
+        boolean first = true;
+        for(int i = 0; i<internal.length; i++) {
+            if(first) {
+                if(internal[i]) {
+                    toReturn+= i;
+                }else {
+                    toReturn+= "_";
+                }
+                first = false;
+            } else {
+                if(internal[i]) {
+                    toReturn += ", "+i;
+                }else {
+                    toReturn += ", _";
+                }
+            }
+        }
+        return toReturn+= "}";
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
