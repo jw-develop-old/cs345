@@ -11,7 +11,7 @@ import adt.NSet;
  * 
  * Implementation of NSet that uses bit vectors
  * to represent the set.
- * 
+ * return 
  * @author Thomas VanDrunen
  * CSCI 345, Wheaton College
  * June 15, 2015
@@ -77,7 +77,8 @@ public class BitVecNSet implements NSet {
      */ 
     public boolean contains(Integer item) {
         checkIndex(item);
-        return internal[item/8];
+        //System.out.println(internal[item/8] & (1 << (item % 8)));
+        return true;
     }
 
     /**
@@ -87,7 +88,7 @@ public class BitVecNSet implements NSet {
      */ 
     public void remove(Integer item) {
         checkIndex(item);
-         throw new UnsupportedOperationException();
+        internal[item / 8] ^= 1 << (item % 8);
     }
 
 
