@@ -77,8 +77,7 @@ public class BitVecNSet implements NSet {
      */ 
     public boolean contains(Integer item) {
         checkIndex(item);
-        //System.out.println(internal[item/8] & (1 << (item % 8)));
-        return true;
+        return (internal[item/8] & (1 << (item % 8))) != 0;
     }
 
     /**
@@ -88,7 +87,7 @@ public class BitVecNSet implements NSet {
      */ 
     public void remove(Integer item) {
         checkIndex(item);
-        internal[item / 8] ^= 1 << (item % 8);
+        internal[item / 8] ^= (1 << (item % 8));
     }
 
 
@@ -97,7 +96,10 @@ public class BitVecNSet implements NSet {
      * @return True if the set is empty, false otherwise.
      */
     public boolean isEmpty() {
-         throw new UnsupportedOperationException();
+         for (byte b : internal)
+        	 if ((b ^ 0) != 0)
+        		 return false;
+         return true;
     }
 
 
@@ -137,7 +139,12 @@ public class BitVecNSet implements NSet {
      */
     public NSet union(NSet other) {
         checkParameter(other);
-         throw new UnsupportedOperationException();
+        NSet toReturn = new BitVecNSet(internal.length);
+        for (int i=0;i<internal.length;i++) {
+        	if (other.contains(i) || this.contains(i))
+        		toReturn.add(i);
+        }
+        return toReturn;
     }
 
     /**
@@ -149,7 +156,12 @@ public class BitVecNSet implements NSet {
      */
     public NSet intersection(NSet other) {
         checkParameter(other);
-         throw new UnsupportedOperationException();
+        NSet toReturn = new BitVecNSet(internal.length);
+        for (int i=0;i<internal.length;i++) {
+        	if (other.contains(i) && this.contains(i))
+        		toReturn.add(i);
+        }
+        return toReturn;
     }
 
     /**
@@ -162,7 +174,12 @@ public class BitVecNSet implements NSet {
      */
     public NSet difference(NSet other) {
         checkParameter(other);
-         throw new UnsupportedOperationException();
+        NSet toReturn = new BitVecNSet(internal.length);
+        for (int i=0;i<internal.length;i++) {
+        	if (other.contains(i) && !this.contains(i))
+        		toReturn.add(i);
+        }
+        return toReturn;
     }
 
     /**
@@ -170,14 +187,56 @@ public class BitVecNSet implements NSet {
      * @return The number of items.
      */
     public int size() {
-         throw new UnsupportedOperationException();
+    	int toReturn = 0;
+    	for (int cByte = 0;cByte < internal.length;cByte++)
+        	for (int cBit = 0;cBit < 8;cBit++)
+        		if (((1 << cBit) & internal[cByte]) != 0)
+        			toReturn++;
+    	return toReturn;
     }
 
     /**
      * Iterate through this set.
      */
     public Iterator<Integer> iterator() {
-         throw new UnsupportedOperationException();
+    	
+    	int cB = 0;
+    	int cT = 0;
+        for (boolean found = false;cB < internal.length && found == false;cB++)
+        	for (cT = 0;cT < 8 && found == false;cT++)
+        		if (((1 << cT) & internal[cB]) != 0)
+        			found = true;
+        
+        final int finalByte = cB;
+        final int finalBit = cT;
+        
+        return new Iterator<Integer>() {
+        	
+        	int cByte = finalByte;
+        	int cBit = finalBit;
+        	
+			public boolean hasNext() {
+				return cByte < internal.length;
+			}
+			
+			public Integer next() {
+				System.out.println("Happened");
+				if (!hasNext()) throw new NoSuchElementException();
+				int toReturn = cByte * 8 + cBit++;
+				
+				if (cBit == 8)
+					cBit = 0;
+				
+				//Moves current up.
+				for (boolean found = false;cByte < internal.length && found == false;cByte++)
+		        	for (;cBit < 8 && found == false;cBit++)
+		        		if (((1 << cBit) & internal[cByte]) != 0)
+		        			found = true;
+					
+				return toReturn;
+			}
+        };
+    	
     }
 
     public String toString() {
