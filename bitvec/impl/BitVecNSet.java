@@ -220,9 +220,8 @@ public class BitVecNSet implements NSet {
 			}
 			
 			public Integer next() {
-				System.out.println("Happened");
-				if (!hasNext()) throw new NoSuchElementException();
-				int toReturn = cByte * 8 + cBit++;
+				//if (!hasNext()) throw new NoSuchElementException();
+				int toReturn = (cByte * 8) + cBit++;
 				
 				if (cBit == 8)
 					cBit = 0;
@@ -236,7 +235,6 @@ public class BitVecNSet implements NSet {
 				return toReturn;
 			}
         };
-    	
     }
 
     public String toString() {
@@ -253,5 +251,4 @@ public class BitVecNSet implements NSet {
         toReturn += "]";
         return toReturn;
     }
-
 }
