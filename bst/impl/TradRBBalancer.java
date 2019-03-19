@@ -26,7 +26,7 @@ public class TradRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>
         int lbh = lInfo.getBlackHeight(),
             rbh = rInfo.getBlackHeight();
         // The node to replace fix, called y in the text
-        BSTMap<K, V, RBInfo<K, V>>.Node replace;
+        BSTMap<K, V, RBInfo<K, V>>.Node replace = null;
         
         // If blackheights are consistent, there's nothing to be done
         if (lbh == rbh) replace = fix;
