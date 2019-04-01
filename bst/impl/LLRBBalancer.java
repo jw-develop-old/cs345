@@ -4,16 +4,14 @@ public class LLRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>  
 
     public BSTMap<K, V, RBInfo<K, V>>.Node putFixup(BSTMap<K, V, RBInfo<K, V>>.Node fix) {
         BSTMap<K, V, RBInfo<K, V>>.Node replace = fix;
-        @SuppressWarnings("unused")
-		RBInfo<K,V> info = fix.getInfo();
+        RBInfo<K,V> info = fix.getInfo();
 
          // add code here
 
         return replace;
     }
 
-    @SuppressWarnings("unused")
-	public BSTMap<K, V, RBInfo<K, V>>.Node removeFixup(BSTMap<K, V, RBInfo<K, V>>.Node fix) {
+    public BSTMap<K, V, RBInfo<K, V>>.Node removeFixup(BSTMap<K, V, RBInfo<K, V>>.Node fix) {
 
         BSTMap<K, V, RBInfo<K, V>>.Node 
             left = fix.getLeft(),
@@ -24,11 +22,11 @@ public class LLRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>  
             rInfo = right.getInfo();
         int lbh = lInfo.getBlackHeight(),
             rbh = rInfo.getBlackHeight();
-        BSTMap<K, V, RBInfo<K, V>>.Node replace = null;
+        BSTMap<K, V, RBInfo<K, V>>.Node replace;
 
          // add code here
         
-        return replace;
+        return replace = null;
 
     }
 
