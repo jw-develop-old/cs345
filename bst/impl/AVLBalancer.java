@@ -8,7 +8,8 @@ public class AVLBalancer<K extends Comparable<K>,V> implements Balancer<K,V,AVLI
         	return fix;
         
         fix.getInfo().recompute();
-                        
+        
+        //Right is not null.
         if (!fix.getRight().isNull()) {
         	
 	        //If balance less than -1.
