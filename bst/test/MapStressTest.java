@@ -139,12 +139,8 @@ public abstract class MapStressTest extends MapTest { //extends MapRemoveTest {
                 assert (returned != null);
                 assert (returned.equals(keys[j] * 42));
 
-                testMapInt.remove(keys[j]);
-
-                assert (!testMapInt.containsKey(keys[j]));
-
             }
-            assert (!testMapInt.iterator().hasNext());
+           
         }
     }
 
@@ -180,12 +176,8 @@ public abstract class MapStressTest extends MapTest { //extends MapRemoveTest {
                 assert (returned != null);
                 assert (returned.equals(keys[j]* magic));
 
-                testMapInt.remove(keys[j]);
-
-                assert (!testMapInt.containsKey(keys[j]));
 
             }
-            assert (!testMapInt.iterator().hasNext());
         }
     }
 
