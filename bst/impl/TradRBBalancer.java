@@ -4,8 +4,11 @@ public class TradRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>
     public BSTMap<K, V, RBInfo<K, V>>.Node putFixup(BSTMap<K, V, RBInfo<K, V>>.Node fix) {
         RBInfo<K,V> info = fix.getInfo();
 
-         // add code here
+        if (fix.isNull())
+        	return fix;
         
+        
+                
         return fix;
            
     }

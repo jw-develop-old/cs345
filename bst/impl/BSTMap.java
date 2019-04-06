@@ -183,14 +183,21 @@ public class BSTMap<K extends Comparable<K>, V, I extends NodeInfo> implements M
             right = oldRight.getLeft();
             oldRight.setLeft(this);
             
+            this.getInfo().recompute();
+            oldRight.getInfo().recompute();
+            
             return oldRight;
         }
+        
         public Node rotateRight() {
             @SuppressWarnings("unchecked")
             RealNode oldLeft = (RealNode) left;
             
             left = oldLeft.getRight();
             oldLeft.setRight(this);
+            
+            this.getInfo().recompute();
+            oldLeft.getInfo().recompute();
             
             return oldLeft;
         }
