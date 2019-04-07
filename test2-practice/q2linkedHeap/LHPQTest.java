@@ -341,7 +341,6 @@ public class LHPQTest  {
         }
     }
 
-    @Test
     public void stressTest() {
         
         int maxSize = 10000;

@@ -32,7 +32,37 @@ public class SortedArrayBag implements Bag<String> {
      * @param numKeys The number of keys
      */
     public SortedArrayBag(Iterator<String> keys, int numKeys) {
-		
+    	
+    	this.keys = new String[numKeys];
+    	this.counts = new int[numKeys];
+    	
+    	String c;
+		for (int i=0;i<numKeys;i++) {
+			c = keys.next();
+			this.keys[i] = c;
+			this.counts[i] = 0;
+		}
+    }
+    
+    private int findIndex(String item) {
+    	
+    	int i=0;
+    	int j=keys.length-1;
+    	int index = (j+i)/2;
+    	
+    	while (!keys[index].equals(item)) {
+    		if (j-i < 2)
+				return (index+1);
+    		if (keys[index].compareTo(item) < 0) {
+    			i = index;
+    		}
+    		else {
+    			j = index;
+    		}
+    		index = (j+i)/2;
+    	}
+    	
+    	return index;
     }
 	
 
@@ -43,7 +73,8 @@ public class SortedArrayBag implements Bag<String> {
      * @param item The item to add
      */
     public void add(String item) {
-        throw new UnsupportedOperationException();
+        int i = findIndex(item);
+        counts[i]++;
     }
 
     /**
@@ -56,7 +87,7 @@ public class SortedArrayBag implements Bag<String> {
      * @return The count for the given item.
      */
     public int count(String item) {
-    throw new UnsupportedOperationException();
+    	return counts[findIndex(item)];
     }
 
     /**
@@ -66,7 +97,7 @@ public class SortedArrayBag implements Bag<String> {
      * @param The item to remove
      */
     public void remove(String item) {
-        throw new UnsupportedOperationException();
+        counts[findIndex(item)] = 0;
     }
 
     /**
@@ -75,7 +106,10 @@ public class SortedArrayBag implements Bag<String> {
      * @return The number of items.
      */
     public int size() {
-        throw new UnsupportedOperationException();
+    	int tR = 0;
+        for (int c : counts)
+        	tR += c;
+        return tR;
     }
 
     /**
@@ -83,7 +117,10 @@ public class SortedArrayBag implements Bag<String> {
      * @return True if the set is empty, false otherwise.
      */
     public boolean isEmpty() {
-        throw new UnsupportedOperationException();
+        for (int c : counts)
+        	if (c > 0)
+        		return false;
+        return true;
     }
 
     /**
@@ -92,7 +129,30 @@ public class SortedArrayBag implements Bag<String> {
      * @return An iterator over the bag
      */
     public Iterator<String> iterator() {
-        throw new UnsupportedOperationException();
+    	Iterator<String> it = new Iterator<String>() {
+        	
+			int current = 0;
+			
+			public boolean hasNext() {
+				return current < counts.length;
+			}
+
+			public String next() {
+				int ind = current;
+				
+				current++;
+				
+				while (hasNext() && counts[current] == 0)
+					current++;
+				
+				return keys[ind];
+			}
+        	
+        };
+        
+        if (it.hasNext() && counts[0] == 0)
+        	it.next();
+        return it;
     }
 
 }
