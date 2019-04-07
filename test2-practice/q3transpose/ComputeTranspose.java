@@ -1,5 +1,7 @@
 package q3transpose;
 
+import q3transpose.AdjListGraph.*;
+
 /**
  * ComputeTranspose
  * 
@@ -20,6 +22,14 @@ public class ComputeTranspose {
      * @return The transpose of the given graph
      */
     public static AdjListGraph computeTranspose(AdjListGraph g) {
-        throw new UnsupportedOperationException();
+        
+    	ALGBuilder builder = new ALGBuilder(g.numVertices());
+    	
+    	for (int i=0;i<g.numVertices();i++) {
+    		for (int v : g.adjacents(i))
+    			builder.connect(v, i);
+    	}
+
+    	return builder.getGraph();
     }
 }

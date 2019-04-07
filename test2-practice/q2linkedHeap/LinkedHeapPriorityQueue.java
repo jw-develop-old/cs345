@@ -67,7 +67,10 @@ public class LinkedHeapPriorityQueue<K> implements PriorityQueue<K> {
       * @param x The node which may be in violation.
       */
      private void increaseKeyAt(Node x) {
-    	  throw new UnsupportedOperationException();
+    	 if (x.parent != null && compy.compare(x.key,x.parent.key) > 0) {
+    		 swap(x,x.parent);
+    		 increaseKeyAt(x.parent);
+    	 }
      }
 
      /**
@@ -80,7 +83,23 @@ public class LinkedHeapPriorityQueue<K> implements PriorityQueue<K> {
       * @param x The node which may be in violation.
       */
      private void decreaseKeyAt(Node x) {
-    	  throw new UnsupportedOperationException();            
+    	 Node tC;
+    	 if (x.left == null) {
+    		 tC = x.right;
+    	 }
+    	 else if (x.right == null) {
+    		 tC = x.left;
+    	 }
+    	 else if (compy.compare(x.left.key,x.right.key) > 0)
+    		 tC = x.left;
+    	 else
+    		 tC = x.right;
+    	 
+    	 if (tC != null)
+    		 if (compy.compare(x.key, tC.key) < 0) {
+    			 swap(x,tC);
+    			 decreaseKeyAt(tC);
+    		 }
      }
      // ---------- The rest of the public priority queue methods, for context ---------
 

@@ -31,7 +31,41 @@ public class VerifyLLRB {
      * tree is set to the right value if the tree verifies as
      * a left-leaning red-black tree
      */
+	
+	static boolean success = true;
+	
     public static boolean verifyLLRB(RBNode root) {
-        throw new UnsupportedOperationException();   	
+    	fix(root);
+    	
+    	return success;
+    }
+    
+    private static int fix(RBNode node) {
+    	
+    	int b = (node.isRed) ? 0 : 1;
+    	int l = b,r = b;
+    	
+    	if (node.left != null) {
+    		l += fix(node.left);
+    		if (node.left.isRed && node.isRed)
+    			success = false;
+    	}
+    	if (node.right != null) {
+    		r += fix(node.right);
+    		if (node.right.isRed)
+    			success = false;
+    	}
+    	
+    	int bH = Math.max(l, r);
+    	
+    	if (node.blackHeight != bH)
+    		success = false;
+    	node.blackHeight = bH;
+    	
+    	if (node.left != null && node.right != null)
+    		if (node.left.blackHeight != node.right.blackHeight)
+    			success = false;
+    	
+    	return bH;
     }
 }

@@ -1,5 +1,8 @@
 package q4twoHop;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * TwoHop
  * 
@@ -24,7 +27,23 @@ public class TwoHop {
      * from s by two links.
      */
     public static boolean[] findTwoHop(Graph g, int s) {
-        throw new UnsupportedOperationException();
+        
+    	Set<Integer> oH = new HashSet<>();
+    	boolean[] tH = new boolean[g.numVertices()];
+    	
+    	for (int i=0;i<tH.length;i++)
+    		tH[i] = false;
+    	
+    	for (Integer v : g.adjacents(s))
+    		oH.add(v);
+    	
+    	for (Integer v : oH)
+    		for (Integer d : g.adjacents(v))
+    			if (d != s && !oH.contains(d))
+    				tH[d] = true;
+ 
+    	return tH;
+    	
     }
     
 }
