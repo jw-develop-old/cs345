@@ -3,7 +3,6 @@ package exercises;
 public class Exercise1 {
 
     /**
-     * 
      * Find the position of an item in a given array, if it is anywhere.
      * PRECONDITION: The array is sorted and contains no null elements.
      * @param array An array sorted by its elements' natural ordering
@@ -13,22 +12,7 @@ public class Exercise1 {
      * it does not occur in the array (including if the array is empty or null)
      */
     public static <T extends Comparable<T>> int binarySearch(T[] array, T item) {
-    	if (array == null || array.length == 0)
-    		return -1;
-         int hInd = array.length;
-         int lInd = 0;
-         int mInd = array.length / 2;
-         int comp;
-         while (hInd - lInd > 0) {
-        	 comp = item.compareTo(array[mInd]);
-        	 if (comp == 0)
-        		 return mInd;
-        	 else if (comp > 0)
-        		 lInd = mInd+1;
-        	 else
-        		 hInd = mInd;
-        	 mInd = (hInd + lInd) / 2;
-         }
-         return -1;
+         throw new UnsupportedOperationException();
     }
+    
 }

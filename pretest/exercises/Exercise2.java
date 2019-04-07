@@ -90,12 +90,7 @@ public class Exercise2<E> implements Iterable<E> {
      * @return The element at the specified position
      */
     public E get(int index) {
-    	checkIndex(index);
-    	Node curr;
-        for (curr = head;index >0;index--,curr = curr.next);
-        if (curr != null)
-        	return curr.datum;
-        return null;
+         throw new UnsupportedOperationException();
     }
 
     /**
@@ -106,12 +101,7 @@ public class Exercise2<E> implements Iterable<E> {
      * @param element The element at the specified position
      */
     public void set(int index, E element) {
-    	checkIndex(index);
-    	Node curr;
-        for (curr = head;
-        		index > 0;index--,
-        		curr = curr.next);
-        curr.datum = element;
+         throw new UnsupportedOperationException();
     }
 
     /**
@@ -123,26 +113,9 @@ public class Exercise2<E> implements Iterable<E> {
      * @return The item removed
      */
     public E remove(int index) {
-    	checkIndex(index);
-    	E toReturn = head.datum;
-    	
-    	if (index == 0) {
-    		head = head.next;
-    		if (size == 1)
-        		head = tail = null;
-    	}
-    	else {
-    		Node curr = head;
-    		for (;index > 1; curr = curr.next, index--);
-	    	if (curr.next == tail)
-	    		tail = curr;
-	    	curr.next = curr.next.next;
-	    	toReturn = curr.datum;
-	    }
-    	size--;
-    	return toReturn;
+         throw new UnsupportedOperationException();
     }
- 
+
     /**
      * Return the number of elements in this list.
      * @return The number of elements in this list.
