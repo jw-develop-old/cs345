@@ -199,70 +199,31 @@ public class BitVecNSet implements NSet {
      * Iterate through this set.
      */
     public Iterator<Integer> iterator() {
-//    	
-//    	int cB = 0;
-//    	int cT = 0;
-//        for (boolean found = false;cB < internal.length && found == false;cB++)
-//        	for (cT = 0;cT < 8 && found == false;cT++)
-//        		if (((1 << cT) & internal[cB]) != 0)
-//        			found = true;
-//        
-//        final int finalByte = cB;
-//        final int finalBit = cT;
-//        
-//        return new Iterator<Integer>() {
-//        	
-//        	int cByte = finalByte;
-//        	int cBit = finalBit;
-//        	
-//			public boolean hasNext() {
-//				return cByte < internal.length;
-//			}
-//			
-//			public Integer next() {
-//				if (!hasNext()) throw new NoSuchElementException();
-//				int toReturn = (cByte * 8) + cBit++;
-//				
-//				if (cBit == 8) {
-//					cByte++;
-//					cBit = 0;
-//				}
-//				
-//				//Moves current up.
-//				for (boolean found = false;cByte < internal.length && found == false;cByte++)
-//		        	for (;cBit < 8 && found == false;cBit++)
-//		        		if (((1 << cBit) & internal[cByte]) != 0)
-//		        			found = true;
-//					
-//				return toReturn;
-//			}
-//        };
-    	
     	
     	int c=0;
-    	// Moving c up.
         while (c < internal.length &&
         		((1 << (c % 8)) & internal[c / 8]) != 0)
         	c++;
-        
         final int finalC = c;
-        
         return new Iterator<Integer>() {
         	
-        	int cur = finalC;
+        	int current = finalC;
         	
 			public boolean hasNext() {
-				return cur < internal.length;
+				return current < internal.length;
 			}
 			
 			public Integer next() {
+				
+				System.out.println("Happened");
+				
 				if (!hasNext()) throw new NoSuchElementException();
-				int toReturn = cur++;
+				int toReturn = current++;
 				
 				//Moves current up.
-		        while (cur < internal.length &&
-		        		((1 << (cur % 8)) & internal[cur / 8]) != 0)
-		        	cur++;
+		        while (current < internal.length &&
+		        		((1 << (current % 8)) & internal[current / 8]) != 0)
+		        	current++;
 				return toReturn;
 			}
         };

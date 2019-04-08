@@ -36,7 +36,23 @@ public class IterativeBSTMap<K extends Comparable<K>,V> implements OrderedMap<K,
     public Node root;
 
     private Node findKey(K key) {
-         throw new UnsupportedOperationException();
+    	assert root != null;
+        Node current = root;
+        boolean foundIt = false;
+        while (! foundIt) {
+            int compare = key.compareTo(current.key);
+            if (compare < 0) {
+                if (current.left == null) foundIt = true;
+                else current = current.left;
+            }
+            else if (compare == 0) foundIt = true;
+            else {
+                assert compare > 0;
+                if (current.right == null) foundIt = true;
+                else current = current.right;
+            }
+        }
+        return current;
     }
     
     

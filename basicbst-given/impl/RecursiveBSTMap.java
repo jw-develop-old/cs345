@@ -27,13 +27,32 @@ public class RecursiveBSTMap<K extends Comparable<K>, V> implements OrderedMap<K
             this.right = right;
         }
         public Node<K, V> put(K key, V val) {
-             throw new UnsupportedOperationException();
+             int comp = key.compareTo(this.key);
+             if (comp == 0)
+            	 this.value = val;
+             else if (comp < 0)
+            	 left = left.put(key,val);
+             else
+            	 right = right.put(key,val);
+        	 return this;
         }
         public boolean containsKey(K key) {
-             throw new UnsupportedOperationException();
+            int comp = key.compareTo(this.key);
+            if (comp == 0)
+            	return true;
+            else if (comp < 0)
+           	 	return left.containsKey(key);
+            else
+           	 	return right.containsKey(key);
         }
         public V get(K key) {
-             throw new UnsupportedOperationException();
+        	int comp = key.compareTo(this.key);
+            if (comp == 0)
+            	return this.value;
+            else if (comp < 0)
+           	 	return left.get(key);
+            else
+           	 	return right.get(key);
         }
         public Node<K, V> remove(K key) {
             int compare = key.compareTo(this.key);
