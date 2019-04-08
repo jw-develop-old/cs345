@@ -199,39 +199,70 @@ public class BitVecNSet implements NSet {
      * Iterate through this set.
      */
     public Iterator<Integer> iterator() {
+//    	
+//    	int cB = 0;
+//    	int cT = 0;
+//        for (boolean found = false;cB < internal.length && found == false;cB++)
+//        	for (cT = 0;cT < 8 && found == false;cT++)
+//        		if (((1 << cT) & internal[cB]) != 0)
+//        			found = true;
+//        
+//        final int finalByte = cB;
+//        final int finalBit = cT;
+//        
+//        return new Iterator<Integer>() {
+//        	
+//        	int cByte = finalByte;
+//        	int cBit = finalBit;
+//        	
+//			public boolean hasNext() {
+//				return cByte < internal.length;
+//			}
+//			
+//			public Integer next() {
+//				if (!hasNext()) throw new NoSuchElementException();
+//				int toReturn = (cByte * 8) + cBit++;
+//				
+//				if (cBit == 8) {
+//					cByte++;
+//					cBit = 0;
+//				}
+//				
+//				//Moves current up.
+//				for (boolean found = false;cByte < internal.length && found == false;cByte++)
+//		        	for (;cBit < 8 && found == false;cBit++)
+//		        		if (((1 << cBit) & internal[cByte]) != 0)
+//		        			found = true;
+//					
+//				return toReturn;
+//			}
+//        };
     	
-    	int cB = 0;
-    	int cT = 0;
-        for (boolean found = false;cB < internal.length && found == false;cB++)
-        	for (cT = 0;cT < 8 && found == false;cT++)
-        		if (((1 << cT) & internal[cB]) != 0)
-        			found = true;
+    	
+    	int c=0;
+    	// Moving c up.
+        while (c < internal.length &&
+        		((1 << (c % 8)) & internal[c / 8]) != 0)
+        	c++;
         
-        final int finalByte = cB;
-        final int finalBit = cT;
+        final int finalC = c;
         
         return new Iterator<Integer>() {
         	
-        	int cByte = finalByte;
-        	int cBit = finalBit;
+        	int cur = finalC;
         	
 			public boolean hasNext() {
-				return cByte < internal.length;
+				return cur < internal.length;
 			}
 			
 			public Integer next() {
-				//if (!hasNext()) throw new NoSuchElementException();
-				int toReturn = (cByte * 8) + cBit++;
-				
-				if (cBit == 8)
-					cBit = 0;
+				if (!hasNext()) throw new NoSuchElementException();
+				int toReturn = cur++;
 				
 				//Moves current up.
-				for (boolean found = false;cByte < internal.length && found == false;cByte++)
-		        	for (;cBit < 8 && found == false;cBit++)
-		        		if (((1 << cBit) & internal[cByte]) != 0)
-		        			found = true;
-					
+		        while (cur < internal.length &&
+		        		((1 << (cur % 8)) & internal[cur / 8]) != 0)
+		        	cur++;
 				return toReturn;
 			}
         };
