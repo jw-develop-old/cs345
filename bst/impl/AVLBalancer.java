@@ -4,8 +4,7 @@ public class AVLBalancer<K extends Comparable<K>,V> implements Balancer<K,V,AVLI
 
     public BSTMap<K, V, AVLInfo<K, V>>.Node putFixup(BSTMap<K, V, AVLInfo<K, V>>.Node fix) {
         
-        if (fix.isNull())
-        	return fix;
+        fix.getInfo().recompute();
 
         //Right-side violation.
         if (balance(fix) < -1) {
@@ -33,7 +32,7 @@ public class AVLBalancer<K extends Comparable<K>,V> implements Balancer<K,V,AVLI
         
         fix.getInfo().recompute();
         
-		return fix;      
+		return fix;
     }
     
     private int balance(BSTMap<K, V, AVLInfo<K, V>>.Node fix) {

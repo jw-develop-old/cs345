@@ -2,13 +2,86 @@ package impl;
 
 public class TradRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>  {
     public BSTMap<K, V, RBInfo<K, V>>.Node putFixup(BSTMap<K, V, RBInfo<K, V>>.Node fix) {
-        RBInfo<K,V> info = fix.getInfo();
-
-        if (fix.isNull())
-        	return fix;
         
+    	if (fix.isNull())
+    		return fix;
+    	
+    	fix.getInfo().recompute();
         
+        // Red left violation cases.
+        if (!fix.getLeft().isNull()) {
+	        if ((!fix.getLeft().getLeft().isNull() && fix.getInfo().isRedLL()) || 
+	        	(!fix.getLeft().getRight().isNull() && fix.getInfo().isRedLR())) {
+	        	
+	        	// Red uncle.
+	        	if (!fix.getRight().isNull() && fix.getInfo().isRedR()) {
+	        		fix.getInfo().redden();
+	        		fix.getLeft().getInfo().blacken();
+	        		fix.getRight().getInfo().blacken();
+	        	}
+	        	
+	        	// Black uncle.
+	        	else {
+	        		
+	        		// Red left right, black uncle.
+	            	if (!fix.getLeft().getRight().isNull() && fix.getInfo().isRedLR()) {
+	            		fix.setLeft(fix.getLeft().rotateLeft());
+	            	}
+	            	
+	            	// Fall through to left left, black uncle.
+	            	fix = fix.rotateRight();
+	            	fix.getInfo().blacken();
+	            	fix.getRight().getInfo().redden();
+	        	}
+	        }
+        }
+        
+        // Red right violation cases.
+        if (!fix.getRight().isNull()) {
+	        if ((!fix.getRight().getRight().isNull() && fix.getInfo().isRedRR()) || 
+	        	(!fix.getRight().getLeft().isNull() && fix.getInfo().isRedRL())) {
+	        	
+	        	// Red uncle.
+	        	if (!fix.getLeft().isNull() && fix.getInfo().isRedL()) {
+	        		fix.getInfo().redden();
+	        		fix.getLeft().getInfo().blacken();
+	        		fix.getRight().getInfo().blacken();
+	        	}
+	        	
+	        	// Black uncle.
+	        	else {
+	        		
+	        		// Red left right, black uncle.
+	            	if (!fix.getRight().getLeft().isNull() && fix.getInfo().isRedRL()) {
+	            		fix.setRight(fix.getRight().rotateRight());
+	            	}
+	            	
+	            	// Fall through to left left, black uncle.
+	            	fix = fix.rotateLeft();
+	            	fix.getInfo().blacken();
+	            	fix.getLeft().getInfo().redden();
+	        	}
+	        }
+        }
                 
+        // Chain of recomputing.
+        
+        if (!fix.getLeft().isNull()) {
+        	if (!fix.getLeft().getLeft().isNull())
+        		fix.getLeft().getLeft().getInfo().recompute();
+        	if (!fix.getLeft().getRight().isNull())
+        		fix.getLeft().getRight().getInfo().recompute();
+        	fix.getLeft().getInfo().recompute();
+        }
+        if (!fix.getRight().isNull()) {
+        	if (!fix.getRight().getLeft().isNull())
+        		fix.getRight().getLeft().getInfo().recompute();
+        	if (!fix.getRight().getRight().isNull())
+        		fix.getRight().getRight().getInfo().recompute();
+        	fix.getRight().getInfo().recompute();
+        }
+        fix.getInfo().recompute();
+        
         return fix;
            
     }
