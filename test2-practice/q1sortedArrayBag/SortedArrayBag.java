@@ -45,24 +45,18 @@ public class SortedArrayBag implements Bag<String> {
     }
     
     private int findIndex(String item) {
-    	
-    	int i=0;
-    	int j=keys.length-1;
-    	int index = (j+i)/2;
-    	
-    	while (!keys[index].equals(item)) {
-    		if (j-i < 2)
-				return (index+1);
-    		if (keys[index].compareTo(item) < 0) {
-    			i = index;
-    		}
-    		else {
-    			j = index;
-    		}
-    		index = (j+i)/2;
-    	}
-    	
-    	return index;
+    	int start = 0, 
+                stop = keys.length, 
+                mid = keys.length / 2,
+                compare = item.compareTo(keys[mid]);
+      while(stop - start > 1 && compare != 0) {
+            if (compare < 0) stop = mid;
+            else start = mid;
+            mid = (start + stop) / 2;
+            compare = item.compareTo(keys[mid]);
+        }
+        if (compare != 0) return -1;
+        else return mid;
     }
 	
 
@@ -87,7 +81,9 @@ public class SortedArrayBag implements Bag<String> {
      * @return The count for the given item.
      */
     public int count(String item) {
-    	return counts[findIndex(item)];
+    	int index = findIndex(item);
+    	if (index == -1) return 0;
+    	return counts[index];
     }
 
     /**
@@ -97,7 +93,8 @@ public class SortedArrayBag implements Bag<String> {
      * @param The item to remove
      */
     public void remove(String item) {
-        counts[findIndex(item)] = 0;
+    	int index = findIndex(item);
+        if (index != 0) counts[index] = 0;
     }
 
     /**
@@ -129,22 +126,24 @@ public class SortedArrayBag implements Bag<String> {
      * @return An iterator over the bag
      */
     public Iterator<String> iterator() {
+    	
+    	int c = 0;
+    	while (c < counts.length && counts[0]==0) c++;
+    	
+    	final int finalC = c;
+    	
     	Iterator<String> it = new Iterator<String>() {
         	
-			int current = 0;
-			
+			int current = finalC;
 			public boolean hasNext() {
 				return current < counts.length;
 			}
 
 			public String next() {
 				int ind = current;
-				
 				current++;
-				
 				while (hasNext() && counts[current] == 0)
 					current++;
-				
 				return keys[ind];
 			}
         	
