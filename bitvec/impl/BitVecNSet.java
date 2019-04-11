@@ -139,10 +139,10 @@ public class BitVecNSet implements NSet {
      */
     public NSet union(NSet other) {
         checkParameter(other);
-        NSet toReturn = new BitVecNSet(internal.length);
+        BitVecNSet toReturn = new BitVecNSet(range);
+        BitVecNSet o = (BitVecNSet) other;
         for (int i=0;i<internal.length;i++) {
-        	if (other.contains(i) || this.contains(i))
-        		toReturn.add(i);
+        	toReturn.internal[i] = (byte) (internal[i] | o.internal[i]);
         }
         return toReturn;
     }
@@ -155,11 +155,11 @@ public class BitVecNSet implements NSet {
      * in both this and the other set.
      */
     public NSet intersection(NSet other) {
-        checkParameter(other);
-        NSet toReturn = new BitVecNSet(internal.length);
+    	checkParameter(other);
+        BitVecNSet toReturn = new BitVecNSet(range);
+        BitVecNSet o = (BitVecNSet) other;
         for (int i=0;i<internal.length;i++) {
-        	if (other.contains(i) && this.contains(i))
-        		toReturn.add(i);
+        	toReturn.internal[i] = (byte) (internal[i] & o.internal[i]);
         }
         return toReturn;
     }
@@ -173,11 +173,11 @@ public class BitVecNSet implements NSet {
      * are in this set but not in the other set.
      */
     public NSet difference(NSet other) {
-        checkParameter(other);
-        NSet toReturn = new BitVecNSet(internal.length);
+    	checkParameter(other);
+        BitVecNSet toReturn = new BitVecNSet(range);
+        BitVecNSet o = (BitVecNSet) other;
         for (int i=0;i<internal.length;i++) {
-        	if (other.contains(i) && !this.contains(i))
-        		toReturn.add(i);
+        	toReturn.internal[i] = (byte) (internal[i] & ~o.internal[i]);
         }
         return toReturn;
     }
@@ -201,27 +201,31 @@ public class BitVecNSet implements NSet {
     public Iterator<Integer> iterator() {
     	
     	int c=0;
-        while (c < internal.length &&
+        while (c < range &&
         		((1 << (c % 8)) & internal[c / 8]) != 0)
         	c++;
+        
+        // Special case of trival set.
+        if (isEmpty())
+        	c = range;
+        
         final int finalC = c;
+        
         return new Iterator<Integer>() {
         	
         	int current = finalC;
         	
 			public boolean hasNext() {
-				return current < internal.length;
+				return current < range;
 			}
 			
 			public Integer next() {
-				
-				System.out.println("Happened");
-				
-				if (!hasNext()) throw new NoSuchElementException();
+								
+				//if (!hasNext()) throw new NoSuchElementException();
 				int toReturn = current++;
 				
 				//Moves current up.
-		        while (current < internal.length &&
+		        while (current < range &&
 		        		((1 << (current % 8)) & internal[current / 8]) != 0)
 		        	current++;
 				return toReturn;

@@ -333,8 +333,10 @@ public abstract class NSetTest {
     public void initialIterator() {
         reset();
         int i = 0;
-        for (Iterator<Integer> it = testSet.iterator(); it.hasNext(); )
-            i++;
+        for (Iterator<Integer> it = testSet.iterator(); it.hasNext(); ) {
+			i++;
+			System.out.println(i);
+		}
         assertEquals(0, i);
     }
 
