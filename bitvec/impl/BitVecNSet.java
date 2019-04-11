@@ -87,7 +87,7 @@ public class BitVecNSet implements NSet {
      */ 
     public void remove(Integer item) {
         checkIndex(item);
-        internal[item / 8] ^= (1 << (item % 8));
+        internal[item / 8] &= ~(1 << (item % 8));
     }
 
 
@@ -202,13 +202,10 @@ public class BitVecNSet implements NSet {
     	
     	int c=0;
         while (c < range &&
-        		((1 << (c % 8)) & internal[c / 8]) != 0)
+        		((1 << c % 8) & internal[c / 8]) == 0) {
         	c++;
-        
-        // Special case of trival set.
-        if (isEmpty())
-        	c = range;
-        
+		}
+       
         final int finalC = c;
         
         return new Iterator<Integer>() {
@@ -220,13 +217,13 @@ public class BitVecNSet implements NSet {
 			}
 			
 			public Integer next() {
-								
-				//if (!hasNext()) throw new NoSuchElementException();
+				
+				if (!hasNext()) throw new NoSuchElementException();
 				int toReturn = current++;
 				
 				//Moves current up.
 		        while (current < range &&
-		        		((1 << (current % 8)) & internal[current / 8]) != 0)
+		        		((1 << (current % 8)) & internal[current / 8]) == 0)
 		        	current++;
 				return toReturn;
 			}
