@@ -56,13 +56,73 @@ public class OptimalBSTMapFactory {
             double[] missProbs) {
         // keep these checks
         checkLengths(keys, values, keyProbs, missProbs);
-        checkProbs(keyProbs, missProbs);        
+        checkProbs(keyProbs, missProbs);
+        
+        /**
+         * Create three tables: optimal (sub-)trees (which would be an two-dimensional array of Internal nodes),
+         *  total weighted depth of subtrees, and total probability of subtrees.
+			For each diagonal (which really is loop over "intervals")
+			For each cell in the diagonal (for each sub-range of keys with that interval)
+			Calculate the total probability of that sub-range of keys
+			For each key in that range as a candidate root
+			Calculate the total weighted depth
+			Pick the best one. Put the best (least) total weighted depth in the table for the costs. 
+			Instantiate Internal to make a root of the best subtree, 
+			finding the children for that internal node from appropriate places in the table.
+			Return the best root of the whole tree, 
+			which should be at table position [0][n-1] and should have optimal subtrees as its children
+         */
         
         // The number of keys (so we don't need to say keys.length every time)
         int n = keys.length;
-
-
-         throw new UnsupportedOperationException();
+        
+        // Three tables:
+        // optimal (sub-)trees (which would be an two-dimensional array of Internal nodes)
+        Internal[][] T = new Internal[n-1][n-1];
+        // total weighted depth of subtrees
+        double[][] depths = new double[n-1][n-1];
+        // total probability of subtrees.
+        double[][] probs = new double[n-1][n-1];
+        
+        // Initialize the cells (0,0) through (n-1,n-1)
+        for (int i=0;i<n;i++)
+            for (int j=0;j<n;j++)
+            	// Initialize
+            	;
+            	
+        
+        // For each interval size from 1 to n-1
+        for (int interval = 0;interval<n;interval++) {
+        
+        	// For each (i,j) in that interval (j=i+interval)
+        	for (int i=0;i<n-1-interval-i;i++) {
+        
+        		// Find T[i][j]
+        		Internal current = T[i][i+interval];
+        
+        		// Consider each key k_r
+        		// keeping track of root of the best tree seen so far,
+        		// And associated total weighted depth.
+        
+        			// Special case for k_i (r = i)
+        
+        				// Compute total weighted depth, assume it's the best so far.
+        
+        			// For each k_r in [k_i+1,...k_j-1] (each r in [i+1,...j-1])
+        
+        				// Compute total weighted depth, compare with best so far.
+        
+        			// Special case for k_j (r = j)
+        
+        				// Compute total weighted depth, compare with best so far.
+        
+        		// Enter table entries for (i,j)
+        	}
+        }
+        
+        // Return tree rooted at cell (0,n-1) in node tree.
+        OptimalBSTMap.Node root = new Internal(null,"","",null);
+        return new OptimalBSTMap(root);
     }
 
     /**

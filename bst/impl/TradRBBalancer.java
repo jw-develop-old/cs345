@@ -9,7 +9,7 @@ public class TradRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>
     	fix.getInfo().recompute();
         
         // Red left violation cases.
-        if (!fix.getLeft().isNull()) {
+        if (!fix.getLeft().isNull() && fix.getLeft().getInfo().isRed()) {
 	        if ((!fix.getLeft().getLeft().isNull() && fix.getInfo().isRedLL()) || 
 	        	(!fix.getLeft().getRight().isNull() && fix.getInfo().isRedLR())) {
 	        	
@@ -37,7 +37,7 @@ public class TradRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>
         }
         
         // Red right violation cases.
-        if (!fix.getRight().isNull()) {
+        if (!fix.getRight().isNull() && fix.getRight().getInfo().isRed()) {
 	        if ((!fix.getRight().getRight().isNull() && fix.getInfo().isRedRR()) || 
 	        	(!fix.getRight().getLeft().isNull() && fix.getInfo().isRedRL())) {
 	        	
@@ -64,8 +64,7 @@ public class TradRBBalancer<K extends Comparable<K>, V> extends RBBalancer<K, V>
 	        }
         }
                 
-        // Chain of recomputing.
-        
+        // Chain of recomputing. Brute force ...
         if (!fix.getLeft().isNull()) {
         	if (!fix.getLeft().getLeft().isNull())
         		fix.getLeft().getLeft().getInfo().recompute();
