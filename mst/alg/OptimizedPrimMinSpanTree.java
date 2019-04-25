@@ -1,11 +1,11 @@
 package alg;
 
-import impl.BasicHashSet;
-import impl.OptimizedHeapPriorityQueue;
 import adt.PriorityQueue;
 import adt.Set;
 import adt.WeightedGraph;
 import adt.WeightedGraph.WeightedEdge;
+import impl.BasicHashSet;
+import impl.OptimizedHeapPriorityQueue;
 
 /**
  * OptimizedPrimMinSpanTree

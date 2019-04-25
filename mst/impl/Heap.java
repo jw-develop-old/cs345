@@ -66,8 +66,9 @@ public class Heap<E> {
      */
     protected Heap(E[] items, Comparator<E> compy) {
         initializeInternal(items.length, compy);
+        heapSize = items.length;   // added line
         for (int i = 0; i < items.length; i++)
-            internal[i] = items[i];
+            set(i, items[i]);     // changed line
         buildHeap();
     }
 
@@ -346,7 +347,9 @@ public class Heap<E> {
     }
     
     private boolean checkIndex(int i) {
-    	return !(i > heapSize - 1 || i < 0);
+    	if (i > heapSize - 1 || i < 0)
+    		return false;
+    	return true;
     }
     
     /**

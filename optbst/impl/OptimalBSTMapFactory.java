@@ -20,7 +20,7 @@ import impl.OptimalBSTMap.Internal;
  */
 
 public class OptimalBSTMapFactory {
-
+	
     /**
      * Exception to throw if the input to building an optimal BST
      * is not right: either the number of keys, values, key probs,
@@ -78,45 +78,81 @@ public class OptimalBSTMapFactory {
         
         // Three tables:
         // optimal (sub-)trees (which would be an two-dimensional array of Internal nodes)
-        Internal[][] T = new Internal[n-1][n-1];
+        Internal[][] trees = new Internal[n][n];
         // total weighted depth of subtrees
-        double[][] depths = new double[n-1][n-1];
+        double[][] depths = new double[n][n];
         // total probability of subtrees.
-        double[][] probs = new double[n-1][n-1];
+        double[][] T = new double[n][n];
         
         // Initialize the cells (0,0) through (n-1,n-1)
-        for (int i=0;i<n;i++)
-            for (int j=0;j<n;j++)
-            	// Initialize
-            	;
-            	
+        for (int i=0;i<n;i++) {
+        	trees[i][i] = new Internal(dummy,keys[i],values[i],dummy);
+        	depths[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
+        	T[i][i] = missProbs[i]+keyProbs[i]+missProbs[i+1];
+        }
+        
+        System.out.println("Happened");
         
         // For each interval size from 1 to n-1
-        for (int interval = 0;interval<n;interval++) {
+        for (int interval = 1;interval<n;interval++) {
         
         	// For each (i,j) in that interval (j=i+interval)
-        	for (int i=0;i<n-1-interval-i;i++) {
-        
+        	for (int i=0,j=i+interval;
+        			j<n-interval-1;i++,
+        			j=i+interval) {
+        		System.out.println(interval+" "+ i+" "+j);
+        		
+        		
         		// Find T[i][j]
-        		Internal current = T[i][i+interval];
-        
+        		double tWD = 0;
+        		
         		// Consider each key k_r
-        		// keeping track of root of the best tree seen so far,
-        		// And associated total weighted depth.
-        
+        		Internal bestTree = null;
+        		double bestDepth = 0;
+        		
+        		for (int r=i;r<=j;r++) {
+        			
+            		Internal current = trees[r-i][r];
+
         			// Special case for k_i (r = i)
-        
+        			if (r == i) {
+        				
         				// Compute total weighted depth, assume it's the best so far.
-        
+        				double d = 0;
+        				
+        				bestTree = current;
+        				bestDepth = d;
+        			}
+        			
         			// For each k_r in [k_i+1,...k_j-1] (each r in [i+1,...j-1])
-        
+        			else if (r < j) {
+
         				// Compute total weighted depth, compare with best so far.
-        
+        				double d = 0;
+        				
+        				if (d > bestDepth) {
+        					bestTree = current;
+        					bestDepth = 0;
+        				}
+        			}
+
+        			else {
         			// Special case for k_j (r = j)
         
         				// Compute total weighted depth, compare with best so far.
-        
+        				double d = 0;
+        				
+        				if (d > bestDepth) {
+        					bestTree = null;
+        					bestDepth = 0;
+        				}
+        			}
+        		}
+        		
         		// Enter table entries for (i,j)
+        		trees[i][j] = bestTree;
+        		depths[i][j] = bestDepth;
+        		T[i][j] = tWD;
         	}
         }
         

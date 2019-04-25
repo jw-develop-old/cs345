@@ -334,7 +334,10 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * @return The value associated with this key, null if none exists
      */
     public V get(K key) {
-         throw new UnsupportedOperationException();
+    	int index = find(key);
+    	if (index != -1) 
+    		return table[index].value;
+    	return null;
     }
 
     
@@ -344,23 +347,23 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * @param val The value to which this key is associated
      */
     public void put(K key, V val) {
-         throw new UnsupportedOperationException();
+    	int index = find(key);
+    	if (index != -1)
+    		table[index].value = val;
     }
 
     
     /**
      * Make the table bigger and rehash the elements.
      */
-    @SuppressWarnings("unchecked")
     synchronized private void rehash() {
         assert !rehashing;
         rehashing = true;
 
-         throw new UnsupportedOperationException();
-
+        int oldNumPairs = numPairs;
+        
         assert numPairs == oldNumPairs;
         rehashing = false;
-         throw new UnsupportedOperationException();
     }
 
     /**
@@ -390,7 +393,28 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * Produce an iterator for the keys of this map.
      */
     public Iterator<K> iterator() {
-         throw new UnsupportedOperationException();
+    	
+    	int c;
+    	for (c=0;c<table.length && table[c] == null;c++);
+    	final int finalC = c;
+    	
+    	return new Iterator<K>() {
+    		int current = finalC;
+			public boolean hasNext() {
+				return current < table.length;
+			}
+			public K next() {
+				if (hasNext()) {
+					K toReturn = table[current].key;
+					do {
+						current++;
+					} while (table[current] == null && hasNext());
+					return toReturn;
+				} else {
+					throw new NoSuchElementException();
+				}
+			}
+    	};
     }
 
     public String toString() {

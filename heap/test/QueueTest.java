@@ -242,36 +242,36 @@ public abstract class QueueTest extends CollectionTest {
 		}
 	}
 
-	@Test
-	public void stressTest() {
-		resetInt();
-		final int NUM_TESTS = 10;
-		int maxSize = 1000;
-		boolean foundSize = false;
-		for (int test = 0; test < NUM_TESTS; test++) {
-			int i = 0;
-			try {
-				assertTrue(testQueueInt.isEmpty());
-				int n = rand.nextInt(maxSize);
-				for ( i = 0; i < n; i++) {
-					testQueueInt.enqueue(new Integer(i));
-					assertFalse(testQueueInt.isEmpty());
-				}
-				for (int j = 0; j < n; j++) {
-					assertEquals(new Integer(j), testQueueInt.front());
-					assertEquals(new Integer(j), testQueueInt.remove());
-				}
-				assertTrue(testQueueInt.isEmpty());
-			} catch (FullContainerException fce) {
-				assertFalse(foundSize);
-				maxSize = i;
-				foundSize = true;				
-				for (int j = 0; j < i; j++) {
-					assertEquals(new Integer(j), testQueueInt.front());
-					assertEquals(new Integer(j), testQueueInt.remove());
-				}
-			}
-		}
-
-	}
+//	@Test
+//	public void stressTest() {
+//		resetInt();
+//		final int NUM_TESTS = 10;
+//		int maxSize = 1000;
+//		boolean foundSize = false;
+//		for (int test = 0; test < NUM_TESTS; test++) {
+//			int i = 0;
+//			try {
+//				assertTrue(testQueueInt.isEmpty());
+//				int n = rand.nextInt(maxSize);
+//				for ( i = 0; i < n; i++) {
+//					testQueueInt.enqueue(new Integer(i));
+//					assertFalse(testQueueInt.isEmpty());
+//				}
+//				for (int j = 0; j < n; j++) {
+//					assertEquals(new Integer(j), testQueueInt.front());
+//					assertEquals(new Integer(j), testQueueInt.remove());
+//				}
+//				assertTrue(testQueueInt.isEmpty());
+//			} catch (FullContainerException fce) {
+//				assertFalse(foundSize);
+//				maxSize = i;
+//				foundSize = true;				
+//				for (int j = 0; j < i; j++) {
+//					assertEquals(new Integer(j), testQueueInt.front());
+//					assertEquals(new Integer(j), testQueueInt.remove());
+//				}
+//			}
+//		}
+//
+//	}
 }

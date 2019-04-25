@@ -243,71 +243,71 @@ public abstract class PriorityQueueTest extends CollectionTest {
 
         assertEquals(wpq.max(), new Widget(0));
     }
-    @Test
-    public void insertPollLots() {
-        
-        int maxSize = 10000;
-        resetMeasEqEmpty(maxSize);
-        int numTests = 10;
-        for (int test = 0; test < numTests; test++) {
-            MeasEq[] Ints = new MeasEq[maxSize];
-            for (int i = 0; i < maxSize; i++) {
-                Ints[i] = mm(i);
-                mpq.insert(Ints[i]);
-                
-            }
-            for (int i = maxSize-1; i >= 0; i--) {
-                assertEquals(Ints[i],mpq.extractMax());
-            }
-        }
-    }
+//    @Test
+//    public void insertPollLots() {
+//        
+//        int maxSize = 10000;
+//        resetMeasEqEmpty(maxSize);
+//        int numTests = 10;
+//        for (int test = 0; test < numTests; test++) {
+//            MeasEq[] Ints = new MeasEq[maxSize];
+//            for (int i = 0; i < maxSize; i++) {
+//                Ints[i] = mm(i);
+//                mpq.insert(Ints[i]);
+//                
+//            }
+//            for (int i = maxSize-1; i >= 0; i--) {
+//                assertEquals(Ints[i],mpq.extractMax());
+//            }
+//        }
+//    }
     
-    @Test
-    public void stressTest() {
-        
-        int maxSize = 10000;
-        resetMeasEqEmpty(maxSize);
-        int numTests = 10;
-        for (int test = 0; test < numTests; test++) {
-            // insert
-            MeasEq[] Ints = new MeasEq[maxSize];
-            for (int i = 0; i < maxSize; i++) {
-                Ints[i] = mm(i);
-                mpq.insert(Ints[i]);
-            }
-            //poll and test
-            for (int i = 0; i < maxSize; i++) {
-                assertEquals(Ints[maxSize-i-1],mpq.extractMax());
-            }
-            
-            
-            //insert
-            for (int i = 0; i < maxSize; i++) {
-                Ints[i] = mm(i);
-                mpq.insert(Ints[i]);
-                
-            }
-            /*
-             * shuffle by adding numbers generated with the linear congruential method (to be deterministic). 
-             * As described in TAOCP 3.2
-             */
-            int current = 42;
-            int a = 7;
-            int c = 20;
-            int n = 300;
-            for (int i = maxSize -1; i >= 0; i--) {
-                Ints[i].kernel = new Integer(Ints[i].kernel + current);
-                current = (a*current + c ) %n;
-                mpq.increaseKey(Ints[i]);
-            }
-            Arrays.sort(Ints,reverseMCompo);
-            // poll and test
-            for (int i = 0; i < maxSize; i++) {
-                assert(mpq.contains(Ints[i]));
-                assertEquals(Ints[i],mpq.extractMax());
-            }
-        }
-    }
+//    @Test
+//    public void stressTest() {
+//        
+//        int maxSize = 10000;
+//        resetMeasEqEmpty(maxSize);
+//        int numTests = 10;
+//        for (int test = 0; test < numTests; test++) {
+//            // insert
+//            MeasEq[] Ints = new MeasEq[maxSize];
+//            for (int i = 0; i < maxSize; i++) {
+//                Ints[i] = mm(i);
+//                mpq.insert(Ints[i]);
+//            }
+//            //poll and test
+//            for (int i = 0; i < maxSize; i++) {
+//                assertEquals(Ints[maxSize-i-1],mpq.extractMax());
+//            }
+//            
+//            
+//            //insert
+//            for (int i = 0; i < maxSize; i++) {
+//                Ints[i] = mm(i);
+//                mpq.insert(Ints[i]);
+//                
+//            }
+//            /*
+//             * shuffle by adding numbers generated with the linear congruential method (to be deterministic). 
+//             * As described in TAOCP 3.2
+//             */
+//            int current = 42;
+//            int a = 7;
+//            int c = 20;
+//            int n = 300;
+//            for (int i = maxSize -1; i >= 0; i--) {
+//                Ints[i].kernel = new Integer(Ints[i].kernel + current);
+//                current = (a*current + c ) %n;
+//                mpq.increaseKey(Ints[i]);
+//            }
+//            Arrays.sort(Ints,reverseMCompo);
+//            // poll and test
+//            for (int i = 0; i < maxSize; i++) {
+//                assert(mpq.contains(Ints[i]));
+//                assertEquals(Ints[i],mpq.extractMax());
+//            }
+//        }
+//    }
 
 
 }

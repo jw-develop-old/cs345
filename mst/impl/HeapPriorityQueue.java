@@ -123,15 +123,29 @@ public class HeapPriorityQueue<K> implements PriorityQueue<K> {
      * @return The maximum element.
      */
     public K extractMax() {
-    	if (!isEmpty()) {
-	    	int i = internal.heapSize() - 1;
-	    	K toReturn = max();
-	    	internal.swap(i,0);
-	    	internal.decrementHeapSize();
-	    	decreaseKey(toReturn);
-	    	return toReturn;
-    	}
-    	return null;
+    	if (isEmpty()) throw new NoSuchElementException();
+    	
+//    	System.out.println("Extracting Max");
+    	int i = internal.heapSize() - 1;
+//    	System.out.println(internal);
+    	
+    	K toReturn = max();
+    	internal.swap(0,i);
+//    	System.out.println(toReturn);
+//    	System.out.println(internal);
+    	
+    	K last = max();
+//    	System.out.println(last);
+//    	System.out.println(internal);
+    	
+    	internal.decrementHeapSize();
+//    	System.out.println(internal);
+    	
+    	if (!isEmpty())
+    		decreaseKey(last);
+//    	System.out.println(internal);
+    	
+    	return toReturn;
     }
 
     /**
