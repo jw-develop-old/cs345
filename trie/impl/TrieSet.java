@@ -1,7 +1,8 @@
 package impl;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import adt.Set;
 
@@ -50,7 +51,13 @@ public class TrieSet implements Set<String> {
          * @return
          */
         public int size() {
-             throw new UnsupportedOperationException();
+        	int size = 0;
+        	if (terminal)
+        		size++;
+        	for (TrieNode c : children)
+        		if (c != null)
+        			size += c.size();
+        	return size;
         }
 
         /**
@@ -63,8 +70,21 @@ public class TrieSet implements Set<String> {
          * removal, or null otherwise
          */
         public TrieNode remove(String item) {
-             throw new UnsupportedOperationException();
-                
+        	
+        	// Has a child worth searching for.
+        	TrieNode child = children[c2i(item.charAt(0))];
+        	if (child != null && item.length() > 0) {
+
+        		// End of the string.
+        		if (item.length() == 1)
+        			child.terminal = false;
+
+        		// Call into more of the string.
+        		else
+        			child = child.remove(item.substring(1,item.length()));
+        	}
+
+        	return this;
         }
 
         /**
@@ -170,14 +190,31 @@ public class TrieSet implements Set<String> {
      * Add an item to this set.
      */
     public void add(String item) {
-         throw new UnsupportedOperationException();
+    	int index = 0;
+    	TrieNode current = root;
+    	while (index < item.length()) {
+    		TrieNode next = current.children[c2i(item.charAt(index))];
+    		if (next == null)
+    			next = new TrieNode();
+    		current.children[c2i(item.charAt(index))] = next;
+    		current = next;
+    		index++;
+    	}
+    	if (current != null)
+    		current.terminal = true;
     }
 
     /**
      * Does this set contain the given item?
      */
     public boolean contains(String item) {
-         throw new UnsupportedOperationException();
+    	int index = 0;
+    	TrieNode current = root;
+    	while (current != null && index < item.length()) {
+    		current = current.children[c2i(item.charAt(index))];
+    		index++;
+    	}
+    	return (current != null && current.terminal==true);
     }
 
     /**
@@ -200,7 +237,10 @@ public class TrieSet implements Set<String> {
      * at the root.
      */
     public boolean isEmpty() {
-         throw new UnsupportedOperationException();
+    	for (TrieNode c : root.children)
+    		if (c != null && c.size() != 0)
+    			return false;
+    	return true;
     }
 
     /**
