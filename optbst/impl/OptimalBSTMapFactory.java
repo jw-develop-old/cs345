@@ -79,85 +79,88 @@ public class OptimalBSTMapFactory {
         // Three tables:
         // optimal (sub-)trees (which would be an two-dimensional array of Internal nodes)
         Internal[][] trees = new Internal[n][n];
+        
         // total weighted depth of subtrees
-        double[][] depths = new double[n][n];
+        double[][] C = new double[n][n];
+        
         // total probability of subtrees.
         double[][] T = new double[n][n];
+        
+        
         
         // Initialize the cells (0,0) through (n-1,n-1)
         for (int i=0;i<n;i++) {
         	trees[i][i] = new Internal(dummy,keys[i],values[i],dummy);
-        	depths[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
+        	C[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
         	T[i][i] = missProbs[i]+keyProbs[i]+missProbs[i+1];
         }
         
-        System.out.println("Happened");
+        System.out.println("Start");
+        
+//        for (String s : keys)
+//        	System.out.println(s);
         
         // For each interval size from 1 to n-1
         for (int interval = 1;interval<n;interval++) {
         
         	// For each (i,j) in that interval (j=i+interval)
         	for (int i=0,j=i+interval;
-        			j<n-interval-1;i++,
+        			j<n;i++,
         			j=i+interval) {
-        		System.out.println(interval+" "+ i+" "+j);
-        		
+//        		System.out.println("-- "+n+" "+interval+" "+ i+" "+j+" --");
         		
         		// Find T[i][j]
-        		double tWD = 0;
+        		// "Lower right" box, as cases will handle all lower lefts.
+        		double tP = missProbs[i];
+        		
+        		for (int c=i;c<=j;c++)
+        			tP += missProbs[c+1] + keyProbs[c];
+        		T[i][j] = tP;
         		
         		// Consider each key k_r
         		Internal bestTree = null;
-        		double bestDepth = 0;
+        		double bestDepth = Integer.MAX_VALUE;
         		
         		for (int r=i;r<=j;r++) {
         			
-            		Internal current = trees[r-i][r];
-
-        			// Special case for k_i (r = i)
-        			if (r == i) {
-        				
-        				// Compute total weighted depth, assume it's the best so far.
-        				double d = 0;
-        				
-        				bestTree = current;
-        				bestDepth = d;
-        			}
+//        			System.out.println("--r: "+r+" --");
         			
+        			// General case for i < r < j
         			// For each k_r in [k_i+1,...k_j-1] (each r in [i+1,...j-1])
-        			else if (r < j) {
+    				double d = (r>i && r<j) ? C[i][r-1]+T[i][j]+C[r+1][j]:0;
+    				Internal left;
+    				Internal right;
+    				
+    				// Special case for k_i (r = i)
+    				if (r == i) {
+    					d = C[i][j-1]+T[i][j]+missProbs[j+1];
+    					left = null;
+    				}
+    				else
+        				left = trees[r-1][j];
 
-        				// Compute total weighted depth, compare with best so far.
-        				double d = 0;
-        				
-        				if (d > bestDepth) {
-        					bestTree = current;
-        					bestDepth = 0;
-        				}
-        			}
+    				// Special case for k_j (r = j)
+    				if (r == j) {
+    					d = missProbs[i]+T[i][j]+C[i+1][j];
+    					right = null;
+    				}
+    				else
+        				right = trees[i][r+1];
 
-        			else {
-        			// Special case for k_j (r = j)
-        
-        				// Compute total weighted depth, compare with best so far.
-        				double d = 0;
-        				
-        				if (d > bestDepth) {
-        					bestTree = null;
-        					bestDepth = 0;
-        				}
-        			}
+    				if (d < bestDepth) {
+    					bestTree = new Internal(left,keys[r],values[r],right);
+    					bestDepth = d;
+    				}
         		}
         		
         		// Enter table entries for (i,j)
         		trees[i][j] = bestTree;
-        		depths[i][j] = bestDepth;
-        		T[i][j] = tWD;
+        		C[i][j] = bestDepth;
         	}
         }
         
         // Return tree rooted at cell (0,n-1) in node tree.
-        OptimalBSTMap.Node root = new Internal(null,"","",null);
+        OptimalBSTMap.Node root = trees[0][n-1];
         return new OptimalBSTMap(root);
     }
 

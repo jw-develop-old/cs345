@@ -320,9 +320,8 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
         Iterator<Integer> probe = prober.probe(key);
         int i;
         do {
-            assert probe.hasNext();
             i = probe.next();
-        } while(table[i] != null && ! key.equals(table[i].key));
+        } while(table[i] != null && !key.equals(table[i].key));
         if (table[i] == null) return -1;
         else return i;
     }
@@ -347,9 +346,21 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * @param val The value to which this key is associated
      */
     public void put(K key, V val) {
-    	int index = find(key);
-    	if (index != -1)
-    		table[index].value = val;
+    	if (key == null) return;
+        Iterator<Integer> probe = prober.probe(key);
+        int i;
+        do {
+            i = probe.next();
+        } while(table[i] != null && !key.equals(table[i].key));
+        
+        if (table[i] == null) {
+			table[i] = new Pair<K,V>(key,val);
+			numPairs++;
+			if (((double) numPairs/table.length-1) > loadFactor)
+				rehash();
+		}
+        else
+        	table[i].value = val;
     }
 
     
@@ -359,8 +370,12 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
     synchronized private void rehash() {
         assert !rehashing;
         rehashing = true;
-
         int oldNumPairs = numPairs;
+        
+        int newLength = prober.resize(table.length-1);
+    
+        int[] t = new int[5];
+//        Pair<K,V>[] newTable = new Pair<K,V>[newLength];
         
         assert numPairs == oldNumPairs;
         rehashing = false;

@@ -21,8 +21,6 @@ public class OptBSTUtil {
         }
 
     }
-
-    
     
     //public static OptimalBSTMap fromFile(String filename) throws FileNotFoundException {
     public static OptimalBSTData fromFile(String filename) throws FileNotFoundException {
