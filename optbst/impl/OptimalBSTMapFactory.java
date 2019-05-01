@@ -86,19 +86,12 @@ public class OptimalBSTMapFactory {
         // total probability of subtrees.
         double[][] T = new double[n][n];
         
-        
-        
         // Initialize the cells (0,0) through (n-1,n-1)
         for (int i=0;i<n;i++) {
         	trees[i][i] = new Internal(dummy,keys[i],values[i],dummy);
-        	C[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
         	T[i][i] = missProbs[i]+keyProbs[i]+missProbs[i+1];
+        	C[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
         }
-        
-        System.out.println("Start");
-        
-//        for (String s : keys)
-//        	System.out.println(s);
         
         // For each interval size from 1 to n-1
         for (int interval = 1;interval<n;interval++) {
@@ -123,34 +116,37 @@ public class OptimalBSTMapFactory {
         		
         		for (int r=i;r<=j;r++) {
         			
-//        			System.out.println("--r: "+r+" --");
+        			double depth;
         			
-        			// General case for i < r < j
-        			// For each k_r in [k_i+1,...k_j-1] (each r in [i+1,...j-1])
-    				double d = (r>i && r<j) ? C[i][r-1]+T[i][j]+C[r+1][j]:0;
-    				Internal left;
-    				Internal right;
-    				
-    				// Special case for k_i (r = i)
-    				if (r == i) {
-    					d = C[i][j-1]+T[i][j]+missProbs[j+1];
-    					left = null;
-    				}
-    				else
-        				left = trees[r-1][j];
-
-    				// Special case for k_j (r = j)
-    				if (r == j) {
-    					d = missProbs[i]+T[i][j]+C[i+1][j];
-    					right = null;
-    				}
-    				else
-        				right = trees[i][r+1];
-
-    				if (d < bestDepth) {
-    					bestTree = new Internal(left,keys[r],values[r],right);
-    					bestDepth = d;
-    				}
+        			// Init.
+        			if (r==i) {
+        				depth = missProbs[i]+keyProbs[i]+T[i+1][j];
+        				
+        				if (depth < bestDepth) {
+        					bestDepth = depth;
+        					bestTree = new Internal(dummy,keys[r],values[r],trees[i+1][j]);
+        				}
+        			}
+        			
+        			// Last key.
+        			else if (r==j) {
+        				depth = T[i][j-1]+keyProbs[j]+missProbs[j+1];
+        				
+        				if (depth < bestDepth) {
+        					bestDepth = depth;
+        					bestTree = new Internal(trees[i][j-1],keys[r],values[r],dummy);
+        				}
+        			}
+        			
+        			// Common case.
+        			else {
+        				depth = T[i][r-1]+keyProbs[r]+T[r+1][j];
+        				
+        				if (depth < bestDepth) {
+        					bestDepth = depth;
+        					bestTree = new Internal(trees[i][r-1],keys[r],values[r],trees[r+1][j]);
+        				}
+        			}
         		}
         		
         		// Enter table entries for (i,j)
@@ -163,7 +159,7 @@ public class OptimalBSTMapFactory {
         OptimalBSTMap.Node root = trees[0][n-1];
         return new OptimalBSTMap(root);
     }
-
+    
     /**
      * Check that the given probabilities sum to 1, throw an
      * exception if not.

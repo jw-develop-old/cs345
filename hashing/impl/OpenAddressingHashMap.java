@@ -90,6 +90,7 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * sized table.
      */
     private class LinearProbing extends ProbeStrategy {
+    	
         public Iterator<Integer> probe(K key) {
             return new Iterator<Integer>() {
                 /**
@@ -321,12 +322,12 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
         int i;
         do {
             i = probe.next();
-        } while(table[i] != null && !key.equals(table[i].key));
+        } while(table[i] != null &&
+        		!key.equals(table[i].key));
         if (table[i] == null) return -1;
-        else return i;
+        return i;
     }
 
-    
     /**
      * Get the value for a key.
      * @param key The key whose value we're retrieving.
@@ -351,31 +352,49 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
         int i;
         do {
             i = probe.next();
-        } while(table[i] != null && !key.equals(table[i].key));
+            
+            // Create new val.
+            if (table[i] == null) {
+    			table[i] = new Pair<K,V>(key,val);
+    			numPairs++;
+    			if (((double) numPairs/table.length-1) > loadFactor)
+    				rehash();
+    			return;
+            }
+            
+        } while(probe.hasNext() && !key.equals(table[i].key));
         
-        if (table[i] == null) {
-			table[i] = new Pair<K,V>(key,val);
-			numPairs++;
-			if (((double) numPairs/table.length-1) > loadFactor)
-				rehash();
-		}
-        else
-        	table[i].value = val;
+        table[i].value = val;
     }
 
     
     /**
      * Make the table bigger and rehash the elements.
      */
-    synchronized private void rehash() {
+	@SuppressWarnings("unchecked")
+	synchronized private void rehash() {
         assert !rehashing;
         rehashing = true;
         int oldNumPairs = numPairs;
         
         int newLength = prober.resize(table.length-1);
     
-        int[] t = new int[5];
-//        Pair<K,V>[] newTable = new Pair<K,V>[newLength];
+        Pair<K,V>[] oldTable = new Pair[newLength];
+
+        table = new Pair[newLength];
+        
+        boolean changed;
+        int a = 0;
+        do {
+        	a++;
+        	changed = false;
+        	for (int i=0;i<oldTable.length;i++ ) {
+        		Pair<K,V> current = oldTable[i];
+        		if (current != null)
+        			put(current.key,current.value);
+        	}
+        } while (changed==true);
+        System.out.println(a);
         
         assert numPairs == oldNumPairs;
         rehashing = false;
@@ -410,7 +429,7 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
     public Iterator<K> iterator() {
     	
     	int c;
-    	for (c=0;c<table.length && table[c] == null;c++);
+    	for (c=0;c<table.length && (table[c] == null || table[c] == deleted);c++);
     	final int finalC = c;
     	
     	return new Iterator<K>() {
@@ -423,7 +442,7 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
 					K toReturn = table[current].key;
 					do {
 						current++;
-					} while (table[current] == null && hasNext());
+					} while (hasNext() && (table[current] == null || table[current] == deleted));
 					return toReturn;
 				} else {
 					throw new NoSuchElementException();

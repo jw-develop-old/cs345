@@ -1,5 +1,8 @@
 package impl;
 
+import java.util.Iterator;
+
+import impl.OpenAddressingHashMap.Pair;
 
 /**
  * OptimizedLPOpenAddressingHashMap
@@ -30,8 +33,52 @@ public class OptimizedLPOpenAddressingHashMap<K,V> extends OpenAddressingHashMap
      */
     @Override  // now that's a REAL override
     public void remove(K key) {
-         throw new UnsupportedOperationException();
+    	
+        int i = find(key);
+        
+        if (i != -1) {
+			table[i] = null;
+			fix(i);
+		}
     }
     
-    
+    private void fix(int i) {
+
+    	int gap = i;
+    	
+        i = (i+1) % table.length;
+        
+    	// Can catch a full loop through the array.
+    	while(table[i] != null) {
+            
+    		int ideal = h.hash(table[i].key);
+    		
+    		// Plugging cases.
+            if ((ideal < gap && gap < i) ||
+            		(i < ideal && ideal < gap) ||
+            		(gap < i && i < ideal)) {
+				table[gap] = table[i];
+				fix(i);
+				return;
+			}
+            
+        	// Walk through the array.
+            i = (i+1) % table.length;
+    	}
+    }
 }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

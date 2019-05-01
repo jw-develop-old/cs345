@@ -1,10 +1,12 @@
 package impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
+
 import adt.Map;
-import adt.Set;
-import impl.ListSet;
 
 /**
  * PerfectHashMap
@@ -58,7 +60,27 @@ public class PerfectHashMap<K, V> implements Map<K, V> {
          */
         @SuppressWarnings("unchecked")
         SecondaryMap(Set<K> givenKeys) {
-             throw new UnsupportedOperationException();
+        	m = (int) Math.pow((double) givenKeys.size(),(double) 2);
+        	keys = (K[]) new Object[m];
+        	values = (V[]) new Object[m];
+        	
+        	boolean collided;
+        	Set<Integer> checks;
+        	do {
+        		collided = false;
+        		checks = new HashSet<Integer>();
+        		h = HashFactory.universalHashFunction(p,m,mask);
+        		
+        		for (K key : givenKeys) {
+        			int code = h.hash(key);
+        			if (checks.contains(code)) {
+        				collided = true;
+        				break;
+        			}
+        			else
+        				checks.add(code);
+        		}
+        	} while (collided == true);
         }
 
         /**
@@ -111,15 +133,38 @@ public class PerfectHashMap<K, V> implements Map<K, V> {
        /**
         * The iterator for this portion of the map.
         */
-        public Iterator<K> iterator() { 
-            // In theory you don't need to write this; all you need
-            // to support is PerfectHashMap.iterator().
-            // However, in my version the iterator for PerfectHashMap
-            // relied on iterators of the secondary maps.
-            // You could use a different approach.
-             throw new UnsupportedOperationException();
+        public Iterator<K> iterator() {
+        	int c;
+        	for (c=0;c<keys.length && keys[c] == null;c++);
+        	
+        	final int finalC = c;
+        	
+        	@SuppressWarnings("unchecked")
+			final K[] fKeys = (K[]) new Object[m];
+        	for (int i = 0; i < keys.length; i++)
+				fKeys[i] = keys[i];
+        	
+        	return new Iterator<K>() {
+        		int current = finalC;
+        		
+        		public boolean hasNext() {
+        			return current < fKeys.length;
+        		}
+
+        		public K next() {
+        			if (hasNext()) {
+        				K tR = fKeys[current];
+        				current++;
+        				
+        				for (;hasNext() && fKeys[current] == null;current++);
+        				
+        				System.out.println("Inner "+current);
+        				return tR;
+        			}
+        			throw new NoSuchElementException();
+        		}
+        	};
         }
-        
     }
 
     /**
@@ -160,7 +205,33 @@ public class PerfectHashMap<K, V> implements Map<K, V> {
      */
     @SuppressWarnings("unchecked")
     public PerfectHashMap(K[] keys) {
-         throw new UnsupportedOperationException();
+    	
+    	// Finding p instance variable and setting mask.
+    	m = keys.length;
+    	p = findMaskAndGreatestKey(keys);
+    	
+    	if (m==0)
+    		return;
+    	
+    	// Making hash function for primary map.
+    	h = HashFactory.universalHashFunction(p,m,mask);
+    	
+    	// Determining which keys will end up in which buckets.
+    	ArrayList<Set<K>> buckets = new ArrayList<Set<K>>(m);
+    	
+    	for (int i=0;i<m;i++)
+			buckets.add(i,new HashSet<K>());
+    	
+    	for (int i = 0; i < keys.length; i++) {
+			K key = keys[i];
+			int code = h.hash((key));
+			buckets.get(code).add(key);
+		}
+    	
+    	// Making a secondary map for each bucket.
+    	secondaries = (SecondaryMap[]) new PerfectHashMap.SecondaryMap[m];
+    	for (int i=0;i<m;i++)
+			secondaries[i] = new SecondaryMap(buckets.get(i));
     }
 
     /**
@@ -250,8 +321,75 @@ public class PerfectHashMap<K, V> implements Map<K, V> {
     /**
      * Return an iterator over this map
      */
+    
+    public static void main(String[] args) {
+		String[] keys = {"a","b","c","d","e","f","g"};
+		
+		PerfectHashMap<String,Integer> map = new PerfectHashMap<String,Integer>(keys);
+		
+		for (int i = 0; i < keys.length; i++) {
+			String s = keys[i];
+			System.out.println(s);
+			map.put(s, i);
+		}
+		
+		for (String s : map)
+			System.out.println(s);
+	}
+    
     public Iterator<K> iterator() {
-         throw new UnsupportedOperationException();
+    	
+    	Set<K> set = new HashSet<K>();
+    	for (int i=0;i<secondaries.length;i++) {
+    		for (K key : secondaries[i])
+    			set.add(key);
+    	}
+    	
+    	return set.iterator();
+    	
+//    	System.out.println("New Iterator");
+//    	
+//    	Iterator<K> currIt = null;
+//    	int c;
+//    	for (c=0;c<secondaries.length;c++) {
+//    		currIt = secondaries[c].iterator();
+//    		if (currIt.hasNext())
+//    			break;
+//    	}
+//    	
+//		final ArrayList<Iterator<K>> fIterators = new ArrayList<Iterator<K>>(m);
+//    	for (int i = 0; i < secondaries.length; i++)
+//			fIterators.add(i,secondaries[i].iterator());
+//    	
+//    	System.out.println(m);
+//    	System.out.println(secondaries.length);
+//    	System.out.println(c);
+//    	
+//    	final Iterator<K> finalCIt = currIt;
+//    	final int finalC = c;
+//    	
+//    	return new Iterator<K>() {
+//    		Iterator<K> cIt = finalCIt;
+//    		int current = finalC;
+//    		
+//    		public boolean hasNext() {
+//    			return current < secondaries.length;
+//    		}
+//
+//    		public K next() {
+//    			if (hasNext()) {
+//    				K tR = cIt.next();
+//    				
+//    				while (hasNext() && !cIt.hasNext())
+//    					current++;
+//    					if (hasNext())
+//    						cIt = fIterators.get(current);
+//    				
+//    				System.out.println("Outer "+current);
+//    				return tR;
+//    			}
+//    			throw new NoSuchElementException();
+//    		}
+//    	};
     }
-
 }

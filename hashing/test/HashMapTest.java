@@ -279,103 +279,103 @@ public abstract class HashMapTest extends MapStressTest {
         
     }
 
-//    @Test
-//    public void stressTest() {
-//        reset();
-//        HashSet<String> original = new HashSet<String>();
-//        original.addAll(Arrays.asList(arrayOfAllLetterSeqs(3)));
-//        Iterator<String> source = original.iterator();
-//
-//        HashSet<String> added = new HashSet<String>();
-//        HashSet<String> removed = new HashSet<String>();
-//
-//        // add a whole bunch
-//
-//        for (int i = 0; i < 150; i++) {
-//            String x = source.next();
-//            added.add(x);
-//            testMap.put(x, x);
-//            assertTrue(testMap.containsKey(x));
-//            assertEquals(x, testMap.get(x));
-//        }
-//
-//        // check they're there
-//        for (Iterator<String> it = added.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertTrue(testMap.containsKey(key));
-//            assertEquals(key, testMap.get(key));
-//        }
-//
-//        // remove a bunch
-//
-//        Iterator<String> someAdded = added.iterator();
-//        for (int i = 0; i < 50; i++) {
-//            String key = someAdded.next();
-//            testMap.remove(key);
-//            removed.add(key);
-//            someAdded.remove();
-//            assertFalse(testMap.containsKey(key));
-//        }
-//        // finish off that iterator
-//        while (someAdded.hasNext())
-//            someAdded.next();
-//
-//        // check the ones we removed are gone and the
-//        // ones we didn't are still there
-//        for (Iterator<String> it = added.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertTrue(testMap.containsKey(key));
-//            assertEquals(key, testMap.get(key));
-//        }
-//        for (Iterator<String> it = removed.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertFalse(testMap.containsKey(key));
-//            assertEquals(null, testMap.get(key));
-//        }
-//
-//        // add the rest
-//
-//        while (source.hasNext()) {
-//            String x = source.next();
-//            added.add(x);
-//            testMap.put(x, x);
-//        }
-//
-//        // check again
-//        for (Iterator<String> it = added.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertTrue(testMap.containsKey(key));
-//            assertEquals(key, testMap.get(key));
-//        }
-//        for (Iterator<String> it = removed.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertFalse(testMap.containsKey(key));
-//            assertEquals(null, testMap.get(key));
-//        }
-//
-//        // remove them all
-//        for (Iterator<String> it = added.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            testMap.remove(key);
-//            removed.add(key);
-//            it.remove();
-//        }
-//
-//        // check again
-//        int i = 0;
-//        for (Iterator<String> it = added.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertTrue(testMap.containsKey(key));
-//            assertEquals(key, testMap.get(key));
-//            i++;
-//        }
-//        assertEquals(0, i);
-//        for (Iterator<String> it = removed.iterator(); it.hasNext();) {
-//            String key = it.next();
-//            assertFalse(testMap.containsKey(key));
-//            assertEquals(null, testMap.get(key));
-//        }
-//    }
+    @Test
+    public void stressTest() {
+        reset();
+        HashSet<String> original = new HashSet<String>();
+        original.addAll(Arrays.asList(arrayOfAllLetterSeqs(3)));
+        Iterator<String> source = original.iterator();
+
+        HashSet<String> added = new HashSet<String>();
+        HashSet<String> removed = new HashSet<String>();
+
+        // add a whole bunch
+
+        for (int i = 0; i < 150; i++) {
+            String x = source.next();
+            added.add(x);
+            testMap.put(x, x);
+            assertTrue(testMap.containsKey(x));
+            assertEquals(x, testMap.get(x));
+        }
+
+        // check they're there
+        for (Iterator<String> it = added.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertTrue(testMap.containsKey(key));
+            assertEquals(key, testMap.get(key));
+        }
+
+        // remove a bunch
+
+        Iterator<String> someAdded = added.iterator();
+        for (int i = 0; i < 50; i++) {
+            String key = someAdded.next();
+            testMap.remove(key);
+            removed.add(key);
+            someAdded.remove();
+            assertFalse(testMap.containsKey(key));
+        }
+        // finish off that iterator
+        while (someAdded.hasNext())
+            someAdded.next();
+
+        // check the ones we removed are gone and the
+        // ones we didn't are still there
+        for (Iterator<String> it = added.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertTrue(testMap.containsKey(key));
+            assertEquals(key, testMap.get(key));
+        }
+        for (Iterator<String> it = removed.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertFalse(testMap.containsKey(key));
+            assertEquals(null, testMap.get(key));
+        }
+
+        // add the rest
+
+        while (source.hasNext()) {
+            String x = source.next();
+            added.add(x);
+            testMap.put(x, x);
+        }
+
+        // check again
+        for (Iterator<String> it = added.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertTrue(testMap.containsKey(key));
+            assertEquals(key, testMap.get(key));
+        }
+        for (Iterator<String> it = removed.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertFalse(testMap.containsKey(key));
+            assertEquals(null, testMap.get(key));
+        }
+
+        // remove them all
+        for (Iterator<String> it = added.iterator(); it.hasNext();) {
+            String key = it.next();
+            testMap.remove(key);
+            removed.add(key);
+            it.remove();
+        }
+
+        // check again
+        int i = 0;
+        for (Iterator<String> it = added.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertTrue(testMap.containsKey(key));
+            assertEquals(key, testMap.get(key));
+            i++;
+        }
+        assertEquals(0, i);
+        for (Iterator<String> it = removed.iterator(); it.hasNext();) {
+            String key = it.next();
+            assertFalse(testMap.containsKey(key));
+            assertEquals(null, testMap.get(key));
+        }
+    }
 
     /**
      * This tests a special situation in naive open-addressing hashtables
