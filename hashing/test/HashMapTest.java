@@ -216,31 +216,31 @@ public abstract class HashMapTest extends MapStressTest {
         assert (testHashMap.get(d) == null);
     }
 
-//    @Test
-//    public void stressTestBadHashing() {
-//        resetPH();
-//        int size = 1000;
-//        HashMap<PoorlyHashed, Integer> good = new HashMap<PoorlyHashed, Integer>();
-//        HashSet<PoorlyHashed> removed = new HashSet<PoorlyHashed>();
-//        for (int i = size; i >= 0; i--) {
-//            good.put(new PoorlyHashed(i), i * 2);
-//            testHashMap.put(new PoorlyHashed(i), i * 2);
-//            if (i % 5 == 0 && i < size) {
-//                good.remove(new PoorlyHashed(i - 2));
-//                testHashMap.remove(new PoorlyHashed(i - 2));
-//                removed.add(new PoorlyHashed(i - 2));
-//                assert (testHashMap.get(new PoorlyHashed(i - 2)) == null);
-//            }
-//            if (i % 13 == 0 && i > 13) {
-//                good.remove(new PoorlyHashed(i));
-//                testHashMap.remove(new PoorlyHashed(i));
-//                removed.add(new PoorlyHashed(i));
-//                assert (testHashMap.get(new PoorlyHashed(i)) == null);
-//            }
-//            checkEqual(good, testHashMap, removed);
-//        }
-//        checkEqual(good, testHashMap, removed);
-//    }
+    @Test
+    public void stressTestBadHashing() {
+        resetPH();
+        int size = 1000;
+        HashMap<PoorlyHashed, Integer> good = new HashMap<PoorlyHashed, Integer>();
+        HashSet<PoorlyHashed> removed = new HashSet<PoorlyHashed>();
+        for (int i = size; i >= 0; i--) {
+            good.put(new PoorlyHashed(i), i * 2);
+            testHashMap.put(new PoorlyHashed(i), i * 2);
+            if (i % 5 == 0 && i < size) {
+                good.remove(new PoorlyHashed(i - 2));
+                testHashMap.remove(new PoorlyHashed(i - 2));
+                removed.add(new PoorlyHashed(i - 2));
+                assert (testHashMap.get(new PoorlyHashed(i - 2)) == null);
+            }
+            if (i % 13 == 0 && i > 13) {
+                good.remove(new PoorlyHashed(i));
+                testHashMap.remove(new PoorlyHashed(i));
+                removed.add(new PoorlyHashed(i));
+                assert (testHashMap.get(new PoorlyHashed(i)) == null);
+            }
+            checkEqual(good, testHashMap, removed);
+        }
+        checkEqual(good, testHashMap, removed);
+    }
 
     @Test
     public void randomTest() {

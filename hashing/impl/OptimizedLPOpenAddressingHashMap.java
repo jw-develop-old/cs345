@@ -36,35 +36,49 @@ public class OptimizedLPOpenAddressingHashMap<K,V> extends OpenAddressingHashMap
     	
         int i = find(key);
         
-        if (i != -1) {
-			table[i] = null;
-			fix(i);
-		}
-    }
-    
-    private void fix(int i) {
-
-    	int gap = i;
-    	
-        i = (i+1) % table.length;
+        for (int i1=0;i1<12;i1++)
+        	System.out.println(i1+" --- "+table[i1]!=null);
         
-    	// Can catch a full loop through the array.
-    	while(table[i] != null) {
-            
-    		int ideal = h.hash(table[i].key);
-    		
-    		// Plugging cases.
-            if ((ideal < gap && gap < i) ||
-            		(i < ideal && ideal < gap) ||
-            		(gap < i && i < ideal)) {
-				table[gap] = table[i];
-				fix(i);
-				return;
-			}
-            
-        	// Walk through the array.
+        if (i != -1) {
+        	
+			System.out.println("Removing "+i);
+			
+        	numPairs--;
+        	table[i] = null;
+        	
+        	System.out.println("Gap is "+i);
+        	
+        	int gap = i;
             i = (i+1) % table.length;
-    	}
+            
+        	// Can catch a full loop through the array.
+        	while(table[i] != null) {
+        		System.out.println("Inside "+i);
+                
+        		int ideal = h.hash(table[i].key);
+        		
+        		// Plugging cases.
+                if ((ideal < gap && gap < i) ||
+                		(i < ideal && ideal <= gap) ||
+                		(gap < i && i < ideal)) {
+                	
+                	System.out.println("Plugged "+i);
+                	
+    				table[gap] = table[i];
+    				table[i] = null;
+    				gap = i;
+    				System.out.println("Gap is "+i);
+    			}
+                
+            	// Walk through the array.
+                System.out.println("i is now "+i);
+                i = (i+1) % table.length;
+        	}
+        	System.out.println("FINISHED "+i);
+        }
+        
+        for (int i1=0;i1<12;i1++)
+        	System.out.println(i1+" --- "+table[i1]!=null);
     }
 }
     

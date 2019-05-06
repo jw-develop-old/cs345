@@ -94,7 +94,16 @@ public class TrieSet implements Set<String> {
          * @return The iterator
          */
         public Iterator<String> iterator(final String prefix) {
-             throw new UnsupportedOperationException(); //(BONUS)
+        	return new Iterator<String>() {
+				public boolean hasNext() {
+					return false;
+				}
+
+				public String next() {
+					return null;
+				}
+        		
+        	};
         }
 
     /**
@@ -112,7 +121,16 @@ public class TrieSet implements Set<String> {
      * interpreted as a wildcard.
      */
         public Iterator<String> matchIterator(final String prefix, final String pattern) {
-             throw new UnsupportedOperationException(); // (BONUS)
+        	return new Iterator<String>() {
+				public boolean hasNext() {
+					return false;
+				}
+
+				public String next() {
+					return null;
+				}
+        		
+        	};
         }
     }
 
@@ -258,7 +276,7 @@ public class TrieSet implements Set<String> {
      * a prefix of s
      */
     public String longestPrefixOf(String s) {
-         throw new UnsupportedOperationException();//(BONUS)
+    	return s;
     }
 
     /**
@@ -267,7 +285,20 @@ public class TrieSet implements Set<String> {
      * @return
      */
     public Iterable<String> keysWithPrefix(final String s) {
-         throw new UnsupportedOperationException(); //(BONUS)
+    	return new Iterable<String>() {
+			public Iterator<String> iterator() {
+				return new Iterator<String>() {
+					public boolean hasNext() {
+						return false;
+					}
+
+					public String next() {
+						return null;
+					}
+	        		
+	        	};
+			}
+    	};
     }
 
     /**

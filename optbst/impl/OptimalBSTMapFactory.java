@@ -97,18 +97,14 @@ public class OptimalBSTMapFactory {
         for (int interval = 1;interval<n;interval++) {
         
         	// For each (i,j) in that interval (j=i+interval)
-        	for (int i=0,j=i+interval;
-        			j<n;i++,
-        			j=i+interval) {
+        	for (int i=0;i+interval<n;i++) {
+        		
+        		int j = i+interval;
 //        		System.out.println("-- "+n+" "+interval+" "+ i+" "+j+" --");
         		
         		// Find T[i][j]
         		// "Lower right" box, as cases will handle all lower lefts.
-        		double tP = missProbs[i];
-        		
-        		for (int c=i;c<=j;c++)
-        			tP += missProbs[c+1] + keyProbs[c];
-        		T[i][j] = tP;
+        		T[i][j] = missProbs[i]+keyProbs[i]+T[i+1][j];
         		
         		// Consider each key k_r
         		Internal bestTree = null;
@@ -120,7 +116,7 @@ public class OptimalBSTMapFactory {
         			
         			// Init.
         			if (r==i) {
-        				depth = missProbs[i]+keyProbs[i]+T[i+1][j];
+        				depth = missProbs[i]+T[i][j]+C[i+1][j];
         				
         				if (depth < bestDepth) {
         					bestDepth = depth;
@@ -130,7 +126,7 @@ public class OptimalBSTMapFactory {
         			
         			// Last key.
         			else if (r==j) {
-        				depth = T[i][j-1]+keyProbs[j]+missProbs[j+1];
+        				depth = C[i][j-1]+T[i][j]+missProbs[j+1];
         				
         				if (depth < bestDepth) {
         					bestDepth = depth;
@@ -140,7 +136,7 @@ public class OptimalBSTMapFactory {
         			
         			// Common case.
         			else {
-        				depth = T[i][r-1]+keyProbs[r]+T[r+1][j];
+        				depth = C[i][r-1]+T[i][j]+C[r+1][j];
         				
         				if (depth < bestDepth) {
         					bestDepth = depth;
