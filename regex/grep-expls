@@ -1,0 +1,63 @@
+# basic examples
+
+grep wisdom prov1
+
+grep wisdom *    
+
+
+# search for message or messenger
+
+grep -E "mess(a|en)g" *
+
+
+# search for eat or ate
+
+grep -E "eat|ate" prov*
+
+grep -E "\<(eat|ate)" prov*
+
+grep -E "\<(eat|ate)\>" prov*
+
+
+# search for verses
+
+grep -E "[0-9]{1,2} [A-Za-z]*\>" *
+
+grep -E -o "[0-9]{1,2} [A-Za-z]*\>" *
+
+
+# occurences of bless
+
+grep -E "[Bb]less" prov*
+
+# files with match
+grep -E -l "[Bb]less" prov*
+
+# files without match
+grep -E -L "[Bb]less" prov*
+
+# count lines
+grep -E -c "[Bb]less" prov*
+
+
+# find lines that begin with words
+
+grep -E "^[A-Za-z]" prov*
+
+grep -E "^[A-Z][^0-9,.?;\!]*$" prov*
+
+grep -E "^[A-Za-z].*[,.?\!]" prov*
+
+
+# recipes -- from Bambenek and Lus, "grep Pocket Reference"
+
+# IP addresses
+grep -E "\<[0-9]{1,3}(\.[0-1]{1,3}){3}\>" *
+
+# Email addresses
+grep -E "\<[A-Za-z0-9]+@[A-Za-z0-9]+\.(com|net|org|uk|mil|gov|edu)\>" *
+
+# US phone numbers
+grep -E "\<(\(?)[0-9]{3}(\)|-|\)-|)[0-9]{3}-?[0-9]{4}\>" *
+
+

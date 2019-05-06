@@ -39,10 +39,10 @@ public abstract class MapStressTest extends MapRemoveTest {
 
     @Test
     public void putLotsRandom() {
-        resetInteger();
-        for (int i = 0; i < 200; i++) {
-            testMapInt.put(rand.nextInt(), 42);
-        }
+    	resetInteger();
+    	for (int i = 0; i < 200; i++) {
+    		testMapInt.put(rand.nextInt(), 42);
+    	}
     }
     
     @Test
@@ -162,48 +162,48 @@ public abstract class MapStressTest extends MapRemoveTest {
     }
     @Test
     public void stressTest() {
-        // let size be the current size of test
-        resetInteger();
-        int magic = 42;
-        int tests = 100;
-        int MAXSIZE = 1000;
-        Integer[] keys;
-        for (int i = 0; i < tests; i++) {
-            int currentMaxSize = rand.nextInt(MAXSIZE);
-            keys = new Integer[currentMaxSize];
-            for (int j = 0; j < currentMaxSize; j++) {
+    	// let size be the current size of test
+    	resetInteger();
+    	int magic = 42;
+    	int tests = 100;
+    	int MAXSIZE = 1000;
+    	Integer[] keys;
+    	for (int i = 0; i < tests; i++) {
+    		int currentMaxSize = rand.nextInt(MAXSIZE);
+    		keys = new Integer[currentMaxSize];
+    		for (int j = 0; j < currentMaxSize; j++) {
 
-                Integer toPut = new Integer(j);
-                testMapInt.put(toPut, toPut);
-                // get a random number that probably isn't in the map
-                testMapInt.get(rand.nextInt());
-            }
-            for (int j = 0; j < currentMaxSize; j++) {
+    			Integer toPut = new Integer(j);
+    			testMapInt.put(toPut, toPut);
+    			// get a random number that probably isn't in the map
+    			testMapInt.get(rand.nextInt());
+    		}
+    		for (int j = 0; j < currentMaxSize; j++) {
 
-                testMapInt.put(j, j * magic);
+    			testMapInt.put(j, j * magic);
 
-            }
+    		}
 
-            Iterator<Integer> it = testMapInt.iterator();
-            assert(it != null);
-            for (int j = 0; j < currentMaxSize; j++) {
-                assert (it.hasNext());
-                keys[j] = it.next();
+    		Iterator<Integer> it = testMapInt.iterator();
+    		assert(it != null);
+    		for (int j = 0; j < currentMaxSize; j++) {
+    			assert (it.hasNext());
+    			keys[j] = it.next();
 
-            }
-            for (int j = currentMaxSize - 1; j >= 0; j--) {
-                assert (testMapInt.containsKey(keys[j]));
-                Integer returned = testMapInt.get(keys[j]);
-                assert (returned != null);
-                assert (returned.equals(keys[j] * 42));
+    		}
+    		for (int j = currentMaxSize - 1; j >= 0; j--) {
+    			assert (testMapInt.containsKey(keys[j]));
+    			Integer returned = testMapInt.get(keys[j]);
+    			assert (returned != null);
+    			assert (returned.equals(keys[j] * 42));
 
-                testMapInt.remove(keys[j]);
+    			testMapInt.remove(keys[j]);
 
-                assert (!testMapInt.containsKey(keys[j]));
+    			assert (!testMapInt.containsKey(keys[j]));
 
-            }
-            assert (!testMapInt.iterator().hasNext());
-        }
+    		}
+    		assert (!testMapInt.iterator().hasNext());
+    	}
     }
 
     @Test

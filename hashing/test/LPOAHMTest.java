@@ -40,5 +40,4 @@ public class LPOAHMTest extends HashMapTest {
         assertTrue(skMap.containsKey(keys[30]));
         assertTrue(keys[30].getComparisons() <= 5);
     }
-    
 }

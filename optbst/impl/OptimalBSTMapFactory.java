@@ -79,88 +79,83 @@ public class OptimalBSTMapFactory {
         // Three tables:
         // optimal (sub-)trees (which would be an two-dimensional array of Internal nodes)
         Internal[][] trees = new Internal[n][n];
+        
         // total weighted depth of subtrees
-        double[][] depths = new double[n][n];
+        double[][] C = new double[n][n];
+        
         // total probability of subtrees.
         double[][] T = new double[n][n];
         
         // Initialize the cells (0,0) through (n-1,n-1)
         for (int i=0;i<n;i++) {
         	trees[i][i] = new Internal(dummy,keys[i],values[i],dummy);
-        	depths[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
         	T[i][i] = missProbs[i]+keyProbs[i]+missProbs[i+1];
+        	C[i][i] = 2*missProbs[i]+keyProbs[i]+2*missProbs[i+1];
         }
-        
-        System.out.println("Happened");
         
         // For each interval size from 1 to n-1
         for (int interval = 1;interval<n;interval++) {
         
         	// For each (i,j) in that interval (j=i+interval)
-        	for (int i=0,j=i+interval;
-        			j<n-interval-1;i++,
-        			j=i+interval) {
-        		System.out.println(interval+" "+ i+" "+j);
+        	for (int i=0;i+interval<n;i++) {
         		
+        		int j = i+interval;
+//        		System.out.println("-- "+n+" "+interval+" "+ i+" "+j+" --");
         		
         		// Find T[i][j]
-        		double tWD = 0;
+        		// "Lower right" box, as cases will handle all lower lefts.
+        		T[i][j] = missProbs[i]+keyProbs[i]+T[i+1][j];
         		
         		// Consider each key k_r
         		Internal bestTree = null;
-        		double bestDepth = 0;
+        		double bestDepth = Integer.MAX_VALUE;
         		
         		for (int r=i;r<=j;r++) {
         			
-            		Internal current = trees[r-i][r];
-
-        			// Special case for k_i (r = i)
-        			if (r == i) {
-        				
-        				// Compute total weighted depth, assume it's the best so far.
-        				double d = 0;
-        				
-        				bestTree = current;
-        				bestDepth = d;
-        			}
+        			double depth;
         			
-        			// For each k_r in [k_i+1,...k_j-1] (each r in [i+1,...j-1])
-        			else if (r < j) {
-
-        				// Compute total weighted depth, compare with best so far.
-        				double d = 0;
+        			// Init.
+        			if (r==i) {
+        				depth = missProbs[i]+T[i][j]+C[i+1][j];
         				
-        				if (d > bestDepth) {
-        					bestTree = current;
-        					bestDepth = 0;
+        				if (depth < bestDepth) {
+        					bestDepth = depth;
+        					bestTree = new Internal(dummy,keys[r],values[r],trees[i+1][j]);
         				}
         			}
-
-        			else {
-        			// Special case for k_j (r = j)
-        
-        				// Compute total weighted depth, compare with best so far.
-        				double d = 0;
+        			
+        			// Last key.
+        			else if (r==j) {
+        				depth = C[i][j-1]+T[i][j]+missProbs[j+1];
         				
-        				if (d > bestDepth) {
-        					bestTree = null;
-        					bestDepth = 0;
+        				if (depth < bestDepth) {
+        					bestDepth = depth;
+        					bestTree = new Internal(trees[i][j-1],keys[r],values[r],dummy);
+        				}
+        			}
+        			
+        			// Common case.
+        			else {
+        				depth = C[i][r-1]+T[i][j]+C[r+1][j];
+        				
+        				if (depth < bestDepth) {
+        					bestDepth = depth;
+        					bestTree = new Internal(trees[i][r-1],keys[r],values[r],trees[r+1][j]);
         				}
         			}
         		}
         		
         		// Enter table entries for (i,j)
         		trees[i][j] = bestTree;
-        		depths[i][j] = bestDepth;
-        		T[i][j] = tWD;
+        		C[i][j] = bestDepth;
         	}
         }
         
         // Return tree rooted at cell (0,n-1) in node tree.
-        OptimalBSTMap.Node root = new Internal(null,"","",null);
+        OptimalBSTMap.Node root = trees[0][n-1];
         return new OptimalBSTMap(root);
     }
-
+    
     /**
      * Check that the given probabilities sum to 1, throw an
      * exception if not.

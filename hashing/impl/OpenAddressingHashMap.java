@@ -1,7 +1,9 @@
 package impl; 
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import adt.Map;
 
@@ -90,6 +92,7 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * sized table.
      */
     private class LinearProbing extends ProbeStrategy {
+    	
         public Iterator<Integer> probe(K key) {
             return new Iterator<Integer>() {
                 /**
@@ -320,14 +323,13 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
         Iterator<Integer> probe = prober.probe(key);
         int i;
         do {
-            assert probe.hasNext();
             i = probe.next();
-        } while(table[i] != null && ! key.equals(table[i].key));
+        } while(table[i] != null &&
+        		!key.equals(table[i].key));
         if (table[i] == null) return -1;
-        else return i;
+        return i;
     }
 
-    
     /**
      * Get the value for a key.
      * @param key The key whose value we're retrieving.
@@ -347,20 +349,58 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      * @param val The value to which this key is associated
      */
     public void put(K key, V val) {
-    	int index = find(key);
-    	if (index != -1)
-    		table[index].value = val;
+        
+        int f = find(key);
+        
+        if (f != -1)
+			table[f].value = val;
+        
+		else {
+        	
+        	Iterator<Integer> probe = prober.probe(key);
+        	int i;
+
+        	do {
+        		i = probe.next();
+        	} while(table[i] != null);
+        	
+//        	if (i==f)
+//        		i++;
+        	
+        	System.out.println("Put at "+i);
+        	table[i] = new Pair<K,V>(key,val);
+			numPairs++;
+
+			if ((((((double) deleteds) +
+					((double) numPairs)) /
+					((double)table.length)) > loadFactor) &&
+					!rehashing)
+				rehash();
+        }
     }
 
     
     /**
      * Make the table bigger and rehash the elements.
      */
-    synchronized private void rehash() {
+	@SuppressWarnings("unchecked")
+	synchronized private void rehash() {
         assert !rehashing;
         rehashing = true;
-
         int oldNumPairs = numPairs;
+        
+        int newLength = prober.resize(table.length-1);
+    
+        Pair<K,V>[] oldTable = table;
+        table = new Pair[newLength];
+        numPairs = 0;
+        deleteds = 0;
+        
+        for (int i=0;i<oldTable.length;i++ ) {
+        	Pair<K,V> current = oldTable[i];
+        	if (current != null && current != deleted)
+				put(current.key,current.value);
+        }
         
         assert numPairs == oldNumPairs;
         rehashing = false;
@@ -394,27 +434,34 @@ public class OpenAddressingHashMap<K, V> implements Map<K, V> {
      */
     public Iterator<K> iterator() {
     	
-    	int c;
-    	for (c=0;c<table.length && table[c] == null;c++);
-    	final int finalC = c;
+    	Set<K> tR = new HashSet<>();
+    	for (Pair<K, V> c : table)
+			if (c != null && c != deleted)
+    			tR.add(c.key);
     	
-    	return new Iterator<K>() {
-    		int current = finalC;
-			public boolean hasNext() {
-				return current < table.length;
-			}
-			public K next() {
-				if (hasNext()) {
-					K toReturn = table[current].key;
-					do {
-						current++;
-					} while (table[current] == null && hasNext());
-					return toReturn;
-				} else {
-					throw new NoSuchElementException();
-				}
-			}
-    	};
+    	return tR.iterator();
+//    	
+//    	int c;
+//    	for (c=0;c<table.length && (table[c] == null || table[c] == deleted);c++);
+//    	final int finalC = c;
+//    	
+//    	return new Iterator<K>() {
+//    		int current = finalC;
+//			public boolean hasNext() {
+//				return current < table.length;
+//			}
+//			public K next() {
+//				if (hasNext()) {
+//					K toReturn = table[current].key;
+//					do {
+//						current++;
+//					} while (hasNext() && (table[current] == null || table[current] == deleted));
+//					return toReturn;
+//				} else {
+//					throw new NoSuchElementException();
+//				}
+//			}
+//    	};
     }
 
     public String toString() {
