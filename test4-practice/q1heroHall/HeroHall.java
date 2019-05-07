@@ -19,7 +19,28 @@ public class HeroHall {
 	 * @return The maximum amount of treasure possible
 	 */
 	public static int bestTreasure(int[] s, int[] t, int[] g) {
-		 throw new UnsupportedOperationException(); 
+		int[][] best = new int[s.length][2];
+
+		if (s.length > 0) {
+			best[0][0] = s[0];
+			best[0][1] = t[0];
+
+			for (int i=1;i<s.length;i++) {
+				
+				int l=best[i-1][0],r=best[i-1][1];
+				int c=g[i-1];
+				best[i][0] += (l > r-c) ? 
+						l : r-c;
+				best[i][0] += s[i];
+				best[i][1] += (r > l-c) ?
+						r : l-c;
+				best[i][1] += t[i];
+			}
+
+			int n = s.length-1;
+			return (best[n][0] > best[n][1]) ? best[n][0] : best[n][1];
+		}
+		return 0;
 	}
 
 }

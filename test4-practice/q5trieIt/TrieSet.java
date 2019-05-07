@@ -1,7 +1,8 @@
 package q5trieIt;
 
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.Stack;
 
 /**
  * TrieSet
@@ -102,7 +103,34 @@ public class TrieSet implements Set<String> {
 
 
     public Iterator<String> iterator() {
-         throw new UnsupportedOperationException();
+    	
+    	HashSet<String> set = new HashSet<>();
+    	Stack<TrieNode> nodes = new Stack<TrieNode>();
+    	Stack<String> strs = new Stack<String>();
+    	nodes.add(root);
+    	strs.add("");
+    	if (root != null) {
+    		do {
+    			TrieNode current = nodes.pop();
+    			String string = strs.pop();
+
+    			TrieNode[] children = current.children;
+    			for (int i = 0; i < children.length; i++) {
+    				TrieNode t = children[i];
+    				if (t != null) {
+    					nodes.add(t);
+    					strs.add(string+i2c(i));
+    				}
+    			}
+
+    			if (current.terminal == true)
+    				set.add(string);
+
+
+    		} while (!nodes.isEmpty());
+    	}
+    	
+    	return set.iterator();
     }
 
     

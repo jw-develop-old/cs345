@@ -2,6 +2,7 @@ package q4perfectHashingBitVec;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class PerfHashBVSet<K> implements Set<K> {
@@ -30,12 +31,30 @@ public class PerfHashBVSet<K> implements Set<K> {
     
     @SuppressWarnings("unchecked")
 	public PerfHashBVSet(K[] keys) {
+    	
         m = keys.length;
+        p = PrimeSource.nextOrEqPrime(m);
 
         // Find a hash function such that no bucket has more than
         // four keys; temporarily use the buckets array to 
         // store the number of keys in each bucket
         //PART A
+        
+        for (int i=0;i<buckets.length;i++)
+        	buckets[i] = 0;
+        
+        boolean safe;
+        do {
+        	safe = true;
+        	h = UniversalHashFactory.makeHashFunction(p, m);
+        	
+        	for (int i=0;i<m;i++) {
+        		
+        		short c = buckets[h.hash(i)]++;
+        		if (c > 4)
+        			safe = false;
+        	}
+        } while (!safe);
         // on exit, the buckets array temporarily holds the number of 
         // keys in each bucket
         
@@ -63,6 +82,23 @@ public class PerfHashBVSet<K> implements Set<K> {
             // [j, j + itemsHere) will go in this bucket
 
             // --- PART B ---
+            HashSet<Integer> set;
+            boolean fine;
+            do {
+            	fine = true;
+            	set = new HashSet<Integer>();
+            	hs[j] = UniversalHashFactory.makeHashFunction(
+            			PrimeSource.nextOrEqPrime(itemsHere),itemsHere);
+            	
+            	for (int ind = j;ind < j+itemsHere;ind++) {
+            		
+            		if (set.contains(ind))
+            			fine = false;
+            		set.add(ind);
+            		
+            	}
+            } while (!fine);
+
             // move j ahead to the next bucket's range of keys
             j += itemsHere;
         }

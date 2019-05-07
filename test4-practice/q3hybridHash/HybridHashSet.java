@@ -44,7 +44,10 @@ public class HybridHashSet implements Set<String> {
 		 * @param item The item to add
 		 */
 		public void add(String item) {
-			throw new UnsupportedOperationException();
+			int i = hash(item);
+			while (table[i] != null)
+				i = (i+1) % mm;
+			table[i] = item;
 		}
 
 		/**
@@ -53,7 +56,10 @@ public class HybridHashSet implements Set<String> {
 		 * @return True if the item is in the set, false otherwise
 		 */
 		public boolean contains(String item) {
-			throw new UnsupportedOperationException();
+			int i = hash(item);
+			while (table[i] != null && !table[i].equals(item))
+				i = (i + 1) % mm;
+			return table[i] != null;
 		}
 
 		/**
@@ -61,7 +67,11 @@ public class HybridHashSet implements Set<String> {
 		 * @return The number of items.
 		 */
 		public int size() {
-			throw new UnsupportedOperationException();
+			int size = 0;
+			for (String s : table)
+				if (s != null)
+					size++;
+			return size;
 		}
 
 		/**
@@ -122,7 +132,10 @@ public class HybridHashSet implements Set<String> {
 	 * @return The number of items.
 	 */
 	public int size() {
-		throw new UnsupportedOperationException();
+		int size = 0;
+		for (Bucket b : buckets)
+			size += b.size();
+		return size;
 	}
 
 	/**

@@ -28,9 +28,25 @@ public class TrieSet implements Set<String> {
     }
     
     private int trie2Array(String[] keys, int start, String prefix) {
-         throw new UnsupportedOperationException();
+    	int added = 0;
+    	
+    	for (int i = 0; i < children.length; i++) {
+    		TrieSet c = children[i];
+			
+			if (c != null) {
+				String s = prefix + i2c(i);
+				
+				if (c.terminal) {
+					keys[start+added] = s;
+					added++;
+				}
+				
+				added += c.trie2Array(keys,start+added,s);
+			}
+		}
+    	
+    	return added;
     }
-    
     
     /**
      * Constructor for a node initially empty

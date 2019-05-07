@@ -15,8 +15,25 @@ public class OneWayGPS {
      */
     public static int getBestTravelTime(int eastLength, int northLength, 
             int[][] eastBound, int[][] northBound) {
-
-         throw new UnsupportedOperationException
+    	
+    	int[][] times = new int[eastLength][northLength];
+    	
+    	for (int i=0;i<eastLength;i++)
+			times[i][0] = eastBound[i][0];
+    	
+    	for (int i=0;i<northLength;i++)
+			times[0][i] = northBound[0][i];
+    	
+    	for (int i=1;i<eastLength;i++) {
+        	for (int j=1;j<northLength;j++) {
+        		int w = times[i-1][j] + eastBound[i-1][j];
+        		int s = times[i][j-1] + northBound[i][j-1];
+        		
+        		times[i][j] = (w > s) ? s : w;
+        	}
+    	}
+    	
+    	return times[eastLength-1][northLength-1];
     }
 
 }
